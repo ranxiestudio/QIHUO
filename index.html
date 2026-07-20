@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>多商品期貨保證金與投資組合試算系統 - 智慧級距版</title>
+    <title>多商品期貨保證金與投資組合試算系統 - 智慧行動自適應版</title>
     <style>
         :root {
             --bg-color: #0b0e14;
@@ -24,28 +24,41 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0;
-            height: 100vh;
+            padding: 10px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .container {
             max-width: 1200px;
-            width: 96vw;
+            width: 100%;
             height: 94vh;
             display: grid;
             grid-template-columns: 1.4fr 1fr;
             gap: 15px;
         }
 
+        /* 關鍵修正：當手機或平板寬度小於 900px 時的排版優化 */
         @media (max-width: 900px) {
+            body {
+                overflow-y: auto; /* 允許整個網頁上下捲動 */
+                height: auto;
+            }
             .container {
-                grid-template-columns: 1fr;
-                height: 100vh;
-                overflow-y: auto;
+                grid-template-columns: 1fr; /* 改為單欄上下堆疊 */
+                height: auto; /* 解除 94vh 高度鎖定，改由內容撐開 */
+                overflow: visible;
+            }
+            .panel {
+                overflow: visible !important; /* 解除內部 hidden，讓畫面能往下延展 */
+                height: auto !important;
+            }
+            .product-list {
+                overflow: visible !important;
+                height: auto !important;
             }
         }
 
@@ -77,6 +90,7 @@
         .action-buttons {
             display: flex;
             gap: 6px;
+            flex-wrap: wrap; /* 讓按鈕在手機版可以自動折行 */
         }
 
         .global-settings {
@@ -124,17 +138,23 @@
         .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .product-grid-4 { grid-template-columns: repeat(4, 1fr); }
 
+        /* 手機版格子自適應折行 */
+        @media (max-width: 480px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .product-grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
         .product-footer {
             margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 6px;
-            display: flex; justify-content: space-between; font-size: 0.85rem;
+            display: flex; justify-content: space-between; font-size: 0.85rem; flex-wrap: wrap; gap: 5px;
         }
         .product-pnl { color: var(--text-muted); }
-        .product-trigger { color: var(--text-muted); }
+        .product-trigger { color: var(--text-muted); min-width: 200px; }
 
-        .data-list { display: flex; flex-direction: column; justify-content: space-around; flex: 1; }
+        .data-list { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 10px; }
         .data-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border-color); }
         .data-row:last-child { border-bottom: none; }
-        .label-container { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+        .label-container { display: flex; flex-direction: column; gap: 2px; flex: 1; padding-right: 10px; }
         .data-label { color: var(--text-main); font-size: 0.95rem; }
         .formula-text { color: var(--formula-color); font-size: 0.75rem; font-family: monospace; }
         .data-value { font-weight: 600; text-align: right; font-size: 1rem; white-space: nowrap; }
@@ -145,7 +165,7 @@
 
         .trigger-panel {
             background-color: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 8px; padding: 12px; margin-top: 10px; text-align: center; flex-shrink: 0;
+            border-radius: 8px; padding: 12px; margin-top: 15px; text-align: center; flex-shrink: 0;
         }
         .trigger-panel.danger { background-color: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.3); }
         .trigger-panel.fatal { background-color: rgba(220, 38, 38, 0.15); border-color: rgba(220, 38, 38, 0.6); }
@@ -355,7 +375,7 @@
                         </div>
                         <div class="product-footer">
                             <div class="product-trigger">
-                                🛡️ 單項防禦分析 ｜ 追繳價: <span class="trigger-margin-val">--</span> ｜ 斷頭價: <span class="trigger-liq-val">--</span>
+                                🛡️ 單項防禦 ｜ 追繳: <span class="trigger-margin-val">--</span> ｜ 斷頭: <span class="trigger-liq-val">--</span>
                             </div>
                             <div class="product-pnl">
                                 浮動損益: <span class="pnl-val">--</span>
@@ -424,7 +444,7 @@
                     totalIM += p.imFixed * p.lots;
                     totalMM += p.mmFixed * p.lots;
                 } else {
-                    // 修正隔離：單口價值計算完全獨立不受 entry 影響
+                    // 精確隔離：單口價值計算四捨五入不受買進均價影響
                     const singleContractValue = p.current * p.multiplier;
                     const singleIM = Math.round(singleContractValue * (p.imRatio / 100));
                     const singleMM = Math.round(singleContractValue * (p.mmRatio / 100));
@@ -513,10 +533,10 @@
                         }
                         
                         if (bufferMargin < 0) {
-                            marginElements[index].innerText = "已觸發追繳";
+                            marginElements[index].innerText = "已觸發";
                             marginElements[index].className = "trigger-margin-val text-red";
                         } else if (triggerMarginPrice <= 0) {
-                            marginElements[index].innerText = "極度安全";
+                            marginElements[index].innerText = "極安全";
                             marginElements[index].className = "trigger-margin-val text-green";
                         } else {
                             marginElements[index].innerText = triggerMarginPrice.toFixed(2) + " 元";
@@ -524,10 +544,10 @@
                         }
 
                         if (isLiquidated) {
-                            liqElements[index].innerText = "已斷頭 (<25%)";
+                            liqElements[index].innerText = "已斷頭";
                             liqElements[index].className = "trigger-liq-val text-red";
                         } else if (triggerLiqPrice <= 0) {
-                            liqElements[index].innerText = "極度安全";
+                            liqElements[index].innerText = "極安全";
                             liqElements[index].className = "trigger-liq-val text-green";
                         } else {
                             liqElements[index].innerText = triggerLiqPrice.toFixed(2) + " 元";
