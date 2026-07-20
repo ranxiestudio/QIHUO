@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>多商品期貨保證金與投資組合試算系統 - 緊湊監控版</title>
+    <title>多商品期貨保證金與投資組合試算系統 - 智慧級距版</title>
     <style>
         :root {
             --bg-color: #0b0e14;
@@ -70,6 +70,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
         }
 
         .global-settings {
@@ -81,13 +88,14 @@
             flex-shrink: 0;
         }
 
-        .input-group { margin-bottom: 0; }
+        .input-group { margin-bottom: 0; display: flex; flex-direction: column; justify-content: center; }
         .input-group label { display: block; margin-bottom: 3px; font-size: 0.8rem; color: var(--text-muted); }
-        .input-group input {
+        .input-group input, .input-group select {
             width: 100%; background-color: var(--bg-color); border: 1px solid var(--border-color);
-            color: var(--text-main); padding: 6px 10px; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;
+            color: var(--text-main); padding: 6px 10px; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box; height: 33px;
         }
-        .input-group input:focus { outline: none; border-color: var(--accent-color); }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent-color); }
+        .input-group input:disabled { background-color: rgba(255,255,255,0.03); color: #64748b; cursor: not-allowed; border-color: #232a38; }
 
         .product-list {
             display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; padding-right: 5px;
@@ -100,13 +108,21 @@
             background-color: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); flex-shrink: 0;
         }
 
-        .product-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--accent-light); }
+        .product-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--accent-light); align-items: center;}
+        .product-tag { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.1); margin-left: 8px; color: var(--text-muted); }
+        
         .btn-remove { background-color: transparent; color: var(--red-color); border: 1px solid var(--red-color); border-radius: 4px; cursor: pointer; padding: 2px 8px; font-size: 0.75rem; }
         .btn-remove:hover { background-color: rgba(239, 68, 68, 0.1); }
-        .btn-add { background-color: var(--accent-color); color: white; border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
-        .btn-add:hover { background-color: #2563eb; }
+        
+        .btn-add { border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: opacity 0.2s;}
+        .btn-add:hover { opacity: 0.8; }
+        .btn-stock { background-color: var(--accent-color); color: white; }
+        .btn-tx { background-color: #ef4444; color: white; }
+        .btn-mtx { background-color: #f97316; color: white; }
+        .btn-tmf { background-color: #8b5cf6; color: white; }
 
         .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .product-grid-4 { grid-template-columns: repeat(4, 1fr); }
 
         .product-footer {
             margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 6px;
@@ -132,8 +148,9 @@
             border-radius: 8px; padding: 12px; margin-top: 10px; text-align: center; flex-shrink: 0;
         }
         .trigger-panel.danger { background-color: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.3); }
+        .trigger-panel.fatal { background-color: rgba(220, 38, 38, 0.15); border-color: rgba(220, 38, 38, 0.6); }
         .trigger-title { color: var(--accent-light); font-size: 1rem; margin-bottom: 6px; font-weight: bold; }
-        .trigger-panel.danger .trigger-title { color: var(--red-color); }
+        .trigger-panel.danger .trigger-title, .trigger-panel.fatal .trigger-title { color: var(--red-color); }
         .trigger-price { font-size: 1.6rem; color: var(--text-main); font-weight: bold; margin-bottom: 5px; }
         .buffer-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.3; }
     </style>
@@ -144,8 +161,13 @@
         <!-- 左側：多商品輸入區 -->
         <div class="panel">
             <h2>
-                <span>⚙️ 投資組合設定 (多商品)</span>
-                <button class="btn-add" onclick="addProduct()">+ 新增商品</button>
+                <span>⚙️ 投資組合設定</span>
+                <div class="action-buttons">
+                    <button class="btn-add btn-stock" onclick="addProduct('stock')">+ 股票期貨</button>
+                    <button class="btn-add btn-tx" onclick="addProduct('TX')">+ 大台</button>
+                    <button class="btn-add btn-mtx" onclick="addProduct('MTX')">+ 小台</button>
+                    <button class="btn-add btn-tmf" onclick="addProduct('TMF')">+ 微台</button>
+                </div>
             </h2>
             
             <div class="global-settings">
@@ -156,7 +178,7 @@
             </div>
             
             <div class="product-list" id="product-container">
-                <!-- 商品卡片會由 JavaScript 動態生成在這裡 -->
+                <!-- 商品卡片動態生成 -->
             </div>
         </div>
 
@@ -168,7 +190,7 @@
                 <div class="data-row">
                     <div class="label-container">
                         <span class="data-label">總未沖銷期貨浮動損益</span>
-                        <span class="formula-text">公式：Σ (各商品市價 - 均價) × 總股數</span>
+                        <span class="formula-text">公式：Σ (各商品市價 - 均價) × 乘數</span>
                     </div>
                     <span class="data-value" id="val_pnl">0</span>
                 </div>
@@ -222,7 +244,6 @@
                 </div>
             </div>
 
-            <!-- 核心：多商品總體防禦力分析 -->
             <div class="trigger-panel" id="buffer_panel">
                 <div class="trigger-title" id="buffer_title">🛡️ 帳戶總體防禦力 (總安全氣囊)</div>
                 <div class="trigger-price" id="val_buffer">0 元</div>
@@ -235,8 +256,15 @@
     </div>
 
     <script>
+        const templates = {
+            'stock': { type: 'ratio', name: "新商品期貨", lots: 1, entry: 100, current: 100, level: 'broker', imRatio: 15.77, mmRatio: 12.09, multiplier: 2000, imFixed: 0, mmFixed: 0 },
+            'TX': { type: 'fixed', name: "大臺指期 (大台)", lots: 1, entry: 43000, current: 43000, level: 'fixed', imRatio: 0, mmRatio: 0, multiplier: 200, imFixed: 636000, mmFixed: 488000 },
+            'MTX': { type: 'fixed', name: "小型臺指期 (小台)", lots: 1, entry: 43000, current: 43000, level: 'fixed', imRatio: 0, mmRatio: 0, multiplier: 50, imFixed: 159000, mmFixed: 122000 },
+            'TMF': { type: 'fixed', name: "微型臺指期 (微台)", lots: 1, entry: 43000, current: 43000, level: 'fixed', imRatio: 0, mmRatio: 0, multiplier: 10, imFixed: 31800, mmFixed: 24400 }
+        };
+
         let products = [
-            { id: 1, name: "聯電", lots: 6, entry: 163.0833, current: 138.5, imRatio: 16.66, mmRatio: 12.77, shares: 2000 }
+            { id: 1, type: 'ratio', name: "聯電", lots: 6, entry: 163.0833, current: 132, level: 'broker', imRatio: 15.77, mmRatio: 12.09, multiplier: 2000, imFixed: 0, mmFixed: 0 }
         ];
 
         function formatMoney(number) { return Math.round(number).toLocaleString('en-US'); }
@@ -246,11 +274,69 @@
             container.innerHTML = '';
             
             products.forEach((p, index) => {
+                const isFixed = p.type === 'fixed';
+                const tagLabel = isFixed ? '固定保證金' : '比例保證金';
+                
+                let marginInputs = '';
+                if (isFixed) {
+                    marginInputs = `
+                        <div class="input-grid-4" style="grid-column: span 3; display: grid; gap: 8px;">
+                            <div class="input-group">
+                                <label>保證金類型</label>
+                                <select disabled><option>指數固定金額</option></select>
+                            </div>
+                            <div class="input-group">
+                                <label>原始保證金(元/口)</label>
+                                <input type="number" value="${p.imFixed}" oninput="updateProduct(${index}, 'imFixed', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>維持保證金(元/口)</label>
+                                <input type="number" value="${p.mmFixed}" oninput="updateProduct(${index}, 'mmFixed', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>每點價值(元)</label>
+                                <input type="number" value="${p.multiplier}" oninput="updateProduct(${index}, 'multiplier', this.value)">
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const isCustom = p.level === 'custom';
+                    marginInputs = `
+                        <div class="input-grid-4" style="grid-column: span 3; display: grid; gap: 8px;">
+                            <div class="input-group">
+                                <label>保證金級距</label>
+                                <select onchange="changeStockLevel(${index}, this.value)">
+                                    <option value="broker" ${p.level === 'broker' ? 'selected' : ''}>券商實際 (15.77%)</option>
+                                    <option value="lv1" ${p.level === 'lv1' ? 'selected' : ''}>期交所 級距一 (13.5%)</option>
+                                    <option value="lv2" ${p.level === 'lv2' ? 'selected' : ''}>期交所 級距二 (16.2%)</option>
+                                    <option value="lv3" ${p.level === 'lv3' ? 'selected' : ''}>期交所 級距三 (20.25%)</option>
+                                    <option value="custom" ${p.level === 'custom' ? 'selected' : ''}>✍️ 手動自訂輸入</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>原始保證金(%)</label>
+                                <input type="number" step="0.01" value="${p.imRatio}" ${!isCustom ? 'disabled' : ''} oninput="updateProduct(${index}, 'imRatio', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>維持保證金(%)</label>
+                                <input type="number" step="0.01" value="${p.mmRatio}" ${!isCustom ? 'disabled' : ''} oninput="updateProduct(${index}, 'mmRatio', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>每口股數</label>
+                                <input type="number" value="${p.multiplier}" oninput="updateProduct(${index}, 'multiplier', this.value)">
+                            </div>
+                        </div>
+                    `;
+                }
+
                 const html = `
                     <div class="product-item">
                         <div class="product-header">
-                            <input type="text" value="${p.name}" onchange="updateProduct(${index}, 'name', this.value)" style="background:transparent; border:none; color:var(--accent-light); font-weight:bold; font-size:1rem; width:150px; outline:none;" placeholder="商品名稱">
-                            ${products.length > 1 ? `<button class="btn-remove" onclick="removeProduct(${index})">刪除</button>` : ''}
+                            <div>
+                                <input type="text" value="${p.name}" onchange="updateProduct(${index}, 'name', this.value)" style="background:transparent; border:none; color:var(--accent-light); font-weight:bold; font-size:1rem; width:150px; outline:none;" placeholder="商品名稱">
+                                <span class="product-tag">${tagLabel}</span>
+                            </div>
+                            <button class="btn-remove" onclick="removeProduct(${index})">刪除</button>
                         </div>
                         <div class="product-grid">
                             <div class="input-group">
@@ -259,28 +345,17 @@
                             </div>
                             <div class="input-group">
                                 <label>買進均價</label>
-                                <input type="number" step="0.01" value="${p.entry}" oninput="updateProduct(${index}, 'entry', this.value)">
+                                <input type="number" step="0.0001" value="${p.entry}" oninput="updateProduct(${index}, 'entry', this.value)">
                             </div>
                             <div class="input-group">
                                 <label>目前市價</label>
                                 <input type="number" step="0.5" value="${p.current}" oninput="updateProduct(${index}, 'current', this.value)">
                             </div>
-                            <div class="input-group">
-                                <label>原始保證金(%)</label>
-                                <input type="number" step="0.1" value="${p.imRatio}" oninput="updateProduct(${index}, 'imRatio', this.value)">
-                            </div>
-                            <div class="input-group">
-                                <label>維持保證金(%)</label>
-                                <input type="number" step="0.1" value="${p.mmRatio}" oninput="updateProduct(${index}, 'mmRatio', this.value)">
-                            </div>
-                            <div class="input-group">
-                                <label>每口股數</label>
-                                <input type="number" value="${p.shares}" oninput="updateProduct(${index}, 'shares', this.value)">
-                            </div>
+                            ${marginInputs}
                         </div>
                         <div class="product-footer">
                             <div class="product-trigger">
-                                🛡️ 單項斷頭價(假設其他不變): <span class="trigger-val">--</span>
+                                🛡️ 單項防禦分析 ｜ 追繳價: <span class="trigger-margin-val">--</span> ｜ 斷頭價: <span class="trigger-liq-val">--</span>
                             </div>
                             <div class="product-pnl">
                                 浮動損益: <span class="pnl-val">--</span>
@@ -292,10 +367,28 @@
             });
         }
 
-        function addProduct() {
-            products.push({
-                id: Date.now(), name: "新商品", lots: 1, entry: 100, current: 100, imRatio: 16.2, mmRatio: 12.42, shares: 2000
-            });
+        function changeStockLevel(index, levelKey) {
+            products[index].level = levelKey;
+            if (levelKey === 'broker') {
+                products[index].imRatio = 15.77;
+                products[index].mmRatio = 12.09;
+            } else if (levelKey === 'lv1') {
+                products[index].imRatio = 13.50;
+                products[index].mmRatio = 10.35;
+            } else if (levelKey === 'lv2') {
+                products[index].imRatio = 16.20;
+                products[index].mmRatio = 12.42;
+            } else if (levelKey === 'lv3') {
+                products[index].imRatio = 20.25;
+                products[index].mmRatio = 15.53;
+            }
+            renderProducts();
+            calculate();
+        }
+
+        function addProduct(typeKey) {
+            const template = templates[typeKey];
+            products.push({ id: Date.now(), ...JSON.parse(JSON.stringify(template)) });
             renderProducts();
             calculate();
         }
@@ -324,19 +417,32 @@
 
             // 1. 計算全局總數
             products.forEach(p => {
-                const totalShares = p.lots * p.shares;
-                const contractValue = p.current * totalShares;
+                const totalMultiplier = p.lots * p.multiplier;
+                totalPnL += (p.current - p.entry) * totalMultiplier;
                 
-                totalPnL += (p.current - p.entry) * totalShares;
-                totalIM += contractValue * (p.imRatio / 100);
-                totalMM += contractValue * (p.mmRatio / 100);
+                if (p.type === 'fixed') {
+                    totalIM += p.imFixed * p.lots;
+                    totalMM += p.mmFixed * p.lots;
+                } else {
+                    // 修正隔離：單口價值計算完全獨立不受 entry 影響
+                    const singleContractValue = p.current * p.multiplier;
+                    const singleIM = Math.round(singleContractValue * (p.imRatio / 100));
+                    const singleMM = Math.round(singleContractValue * (p.mmRatio / 100));
+                    
+                    totalIM += singleIM * p.lots;
+                    totalMM += singleMM * p.lots;
+                }
             });
 
             const totalEquity = balance + totalPnL;
             const excessMargin = totalEquity - totalIM;
             const availableMargin = totalPnL > 0 ? (excessMargin - totalPnL) : excessMargin;
             const riskRatio = totalIM > 0 ? (totalEquity / totalIM) * 100 : 0;
-            const buffer = totalEquity - totalMM; 
+            
+            const bufferMargin = totalEquity - totalMM; 
+            const bufferLiq = totalEquity - (totalIM * 0.25); 
+
+            const isLiquidated = totalIM > 0 && riskRatio < 25;
 
             // 2. 更新右側總表 UI
             const pnlEl = document.getElementById('val_pnl');
@@ -357,51 +463,75 @@
             const bufferTitle = document.getElementById('buffer_title');
             const bufferEl = document.getElementById('val_buffer');
 
-            if (buffer < 0) {
+            if (isLiquidated) {
+                bufferPanel.className = 'trigger-panel fatal';
+                bufferTitle.innerText = '💀 嚴重警告：已觸發盤中強制斷頭 (<25%)！';
+                bufferEl.innerText = formatMoney(bufferMargin) + ' 元';
+                bufferEl.style.color = 'var(--red-color)';
+            } else if (bufferMargin < 0) {
                 bufferPanel.className = 'trigger-panel danger';
-                bufferTitle.innerText = '⚠️ 警告：已跌破維持保證金！';
-                bufferEl.innerText = formatMoney(buffer) + ' 元';
+                bufferTitle.innerText = '⚠️ 警告：已觸發盤後追繳 (跌破維持保證金)！';
+                bufferEl.innerText = formatMoney(bufferMargin) + ' 元';
                 bufferEl.style.color = 'var(--red-color)';
             } else {
                 bufferPanel.className = 'trigger-panel';
                 bufferTitle.innerText = '🛡️ 帳戶總體防禦力 (總安全氣囊)';
-                bufferEl.innerText = formatMoney(buffer) + ' 元';
+                bufferEl.innerText = formatMoney(bufferMargin) + ' 元';
                 bufferEl.style.color = 'var(--accent-light)';
             }
 
-            // 3. 更新各商品的單項損益與「動態斷頭價」
+            // 3. 更新各商品的單項數據
             const pnlElements = document.querySelectorAll('.pnl-val');
-            const triggerElements = document.querySelectorAll('.trigger-val');
+            const marginElements = document.querySelectorAll('.trigger-margin-val');
+            const liqElements = document.querySelectorAll('.trigger-liq-val');
             
             products.forEach((p, index) => {
-                const totalShares = p.lots * p.shares;
+                const totalMultiplier = p.lots * p.multiplier;
                 
-                // 更新單項損益
-                const pnl = (p.current - p.entry) * totalShares;
+                const pnl = (p.current - p.entry) * totalMultiplier;
                 if(pnlElements[index]) {
                     pnlElements[index].innerText = (pnl > 0 ? '+' : '') + formatMoney(pnl);
                     pnlElements[index].className = 'pnl-val ' + (pnl > 0 ? 'text-green' : (pnl < 0 ? 'text-red' : ''));
                 }
 
-                // 計算單項斷頭價：假設其他商品價格不變，該商品跌多少會耗盡總 Buffer
-                if(triggerElements[index]) {
-                    if (totalShares === 0) {
-                        triggerElements[index].innerText = "--";
-                        triggerElements[index].className = "trigger-val";
+                if(marginElements[index] && liqElements[index]) {
+                    if (totalMultiplier === 0) {
+                        marginElements[index].innerText = "--";
+                        liqElements[index].innerText = "--";
                     } else {
-                        const mmRatioDec = p.mmRatio / 100;
-                        // 公式：X = 目前市價 - (總剩餘緩衝資金 / (總股數 * (1 - 維持率)))
-                        const triggerPrice = p.current - (buffer / (totalShares * (1 - mmRatioDec)));
+                        let triggerMarginPrice = 0;
+                        let triggerLiqPrice = 0;
                         
-                        if (buffer < 0) {
-                            triggerElements[index].innerText = "已斷頭";
-                            triggerElements[index].className = "trigger-val text-red";
-                        } else if (triggerPrice <= 0) {
-                            triggerElements[index].innerText = "極度安全";
-                            triggerElements[index].className = "trigger-val text-green";
+                        if (p.type === 'fixed') {
+                            triggerMarginPrice = p.current - (bufferMargin / totalMultiplier);
+                            triggerLiqPrice = p.current - (bufferLiq / totalMultiplier);
                         } else {
-                            triggerElements[index].innerText = triggerPrice.toFixed(2) + " 元";
-                            triggerElements[index].className = "trigger-val text-accent";
+                            const mmRatioDec = p.mmRatio / 100;
+                            const imRatioDec = p.imRatio / 100;
+                            triggerMarginPrice = p.current - (bufferMargin / (totalMultiplier * (1 - mmRatioDec)));
+                            triggerLiqPrice = p.current - (bufferLiq / (totalMultiplier * (1 - 0.25 * imRatioDec)));
+                        }
+                        
+                        if (bufferMargin < 0) {
+                            marginElements[index].innerText = "已觸發追繳";
+                            marginElements[index].className = "trigger-margin-val text-red";
+                        } else if (triggerMarginPrice <= 0) {
+                            marginElements[index].innerText = "極度安全";
+                            marginElements[index].className = "trigger-margin-val text-green";
+                        } else {
+                            marginElements[index].innerText = triggerMarginPrice.toFixed(2) + " 元";
+                            marginElements[index].className = "trigger-margin-val text-accent";
+                        }
+
+                        if (isLiquidated) {
+                            liqElements[index].innerText = "已斷頭 (<25%)";
+                            liqElements[index].className = "trigger-liq-val text-red";
+                        } else if (triggerLiqPrice <= 0) {
+                            liqElements[index].innerText = "極度安全";
+                            liqElements[index].className = "trigger-liq-val text-green";
+                        } else {
+                            liqElements[index].innerText = triggerLiqPrice.toFixed(2) + " 元";
+                            liqElements[index].className = "trigger-liq-val text-accent";
                         }
                     }
                 }
