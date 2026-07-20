@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多商品期貨保證金與投資組合試算系統 - 緊湊監控版</title>
+    <style>
+        :root {
+            --bg-color: #0b0e14;
+            --panel-bg: #161a25;
+            --card-bg: #1e2532;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #2e374a;
+            --red-color: #ef4444;
+            --green-color: #22c55e;
+            --accent-color: #3b82f6;
+            --accent-light: #60a5fa;
+            --formula-color: #64748b;
+        }
+
+        /* 鎖定全螢幕，防止整個頁面滾動 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 將版面最大化利用，左右並排 */
+        .container {
+            max-width: 1200px;
+            width: 96vw;
+            height: 94vh;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: 100vh;
+                overflow-y: auto;
+            }
+        }
+
+        /* 面板設定為 flex 容器，高度 100% */
+        .panel {
+            background-color: var(--panel-bg);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* 防止內容撐破面板 */
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .global-settings {
+            margin-bottom: 10px;
+            background-color: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .input-group {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .input-group input {
+            width: 100%;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        /* 產品列表區塊：設定為可內部滾動 */
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto; /* 如果新增太多商品，只在這個區塊內滾動 */
+            flex: 1;
+            padding-right: 5px;
+        }
+        
+        /* 美化內部滾動條 */
+        .product-list::-webkit-scrollbar { width: 6px; }
+        .product-list::-webkit-scrollbar-track { background: transparent; }
+        .product-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+        .product-item {
+            background-color: var(--card-bg);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--accent-light);
+        }
+
+        .btn-remove {
+            background-color: transparent;
+            color: var(--red-color);
+            border: 1px solid var(--red-color);
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+        }
+        
+        .btn-remove:hover { background-color: rgba(239, 68, 68, 0.1); }
+
+        .btn-add {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .btn-add:hover { background-color: #2563eb; }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .product-pnl {
+            margin-top: 8px;
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px dashed var(--border-color);
+            padding-top: 6px;
+        }
+
+        /* 右側帳戶總覽：壓縮間距 */
+        .data-list {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            flex: 1;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+        .label-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .data-label {
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .formula-text {
+            color: var(--formula-color);
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+
+        .data-value {
+            font-weight: 600;
+            text-align: right;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .text-red { color: var(--red-color); }
+        .text-green { color: var(--green-color); }
+        .text-accent { color: var(--accent-light); font-weight: bold;}
+
+        /* 置底面板：壓縮高度 */
+        .trigger-panel {
+            background-color: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .trigger-panel.danger {
+            background-color: rgba(239, 68, 68, 0.05);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .trigger-title {
+            color: var(--accent-light);
+            font-size: 1rem;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        
+        .trigger-panel.danger .trigger-title {
+            color: var(--red-color);
+        }
+
+        .trigger-price {
+            font-size: 1.6rem;
+            color: var(--text-main);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .buffer-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 左側：多商品輸入區 -->
+        <div class="panel">
+            <h2>
+                <span>⚙️ 投資組合設定 (多商品)</span>
+                <button class="btn-add" onclick="addProduct()">+ 新增商品</button>
+            </h2>
+            
+            <div class="global-settings">
+                <div class="input-group">
+                    <label>🏦 帳戶總入金 (本日餘額)</label>
+                    <input type="number" id="balance" value="863469" oninput="calculate()">
+                </div>
+            </div>
+            
+            <div class="product-list" id="product-container">
+                <!-- 商品卡片會由 JavaScript 動態生成在這裡 -->
+            </div>
+        </div>
+
+        <!-- 右側：帳戶總覽與分析 -->
+        <div class="panel">
+            <h2>📊 帳戶總歸戶狀態 (Portfolio Summary)</h2>
+            
+            <div class="data-list">
+                <div class="data-row">
+                    <div class="label-container">
+                        <span class="data-label">總未沖銷期貨浮動損益</span>
+                        <span class="formula-text">公式：Σ (各商品市價 - 均價) × 總股數</span>
+                    </div>
+                    <span class="data-value" id="val_pnl">0</span>
+                </div>
+                
+                <div class="data-row">
+                    <div class="label-container">
+                        <span class="data-label">總權益數 (帳戶總淨值)</span>
+                        <span class="formula-text">公式：本日餘額 + 總浮動損益</span>
+                    </div>
+                    <span class="data-value" id="val_equity">0</span>
+                </div>
+                
+                <div class="data-row">
+                    <div class="label-container">
+                        <span class="data-label">總原始保證金</span>
+                        <span class="formula-text">公式：Σ (各商品所需原始保證金)</span>
+                    </div>
+                    <span class="data-value" id="val_im">0</span>
+                </div>
+                
+                <div class="data-row">
+                    <div class="label-container">
+                        <span class="data-label">總維持保證金</span>
+                        <span class="formula-text">公式：Σ (各商品所需維持保證金)</span>
+                    </div>
+                    <span class="data-value" id="val_mm">0</span>
+                </div>
+
+                <div class="data-row">
+                    <div class="label-container">
+                        <span class="data-label">超額 / 追繳保證金</span>
+                        <span class="formula-text">公式：總權益數 - 總原始保證金</span>
+                    </div>
+                    <span class="data-value" id="val_excess">0</span>
+                </div>
+
+                <div class="data-row">
+                    <div class="label-container">
+                        <span class="data-label">可動用(出金)保證金</span>
+                        <span class="formula-text">公式：超額保證金 - Max(0, 總浮動損益)</span>
+                    </div>
+                    <span class="data-value text-red" id="val_available">0</span>
+                </div>
+                
+                <div class="data-row">
+                    <div class="label-container">
+                        <span class="data-label">帳戶總風險指標</span>
+                        <span class="formula-text">公式：(權益數 ÷ 原始保證金) × 100%</span>
+                    </div>
+                    <span class="data-value text-red" id="val_risk">0.00%</span>
+                </div>
+            </div>
+
+            <!-- 核心：多商品總體防禦力分析 -->
+            <div class="trigger-panel" id="buffer_panel">
+                <div class="trigger-title" id="buffer_title">🛡️ 帳戶總體防禦力 (安全氣囊)</div>
+                <div class="trigger-price" id="val_buffer">0 元</div>
+                <div class="buffer-desc">
+                    多商品模式下無法計算單一斷頭價 (會盈虧互抵)。<br>
+                    此金額代表您的帳戶**還能承受多少總虧損**才被追繳。<br>
+                    (公式：總權益數 - 總維持保證金)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let products = [
+            { id: 1, name: "聯電", lots: 6, entry: 163.0833, current: 138.5, imRatio: 16.66, mmRatio: 12.77, shares: 2000 }
+        ];
+
+        function formatMoney(number) {
+            return Math.round(number).toLocaleString('en-US');
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('product-container');
+            container.innerHTML = '';
+            
+            products.forEach((p, index) => {
+                const pnl = (p.current - p.entry) * p.lots * p.shares;
+                const pnlClass = pnl > 0 ? 'text-green' : (pnl < 0 ? 'text-red' : '');
+                const pnlSign = pnl > 0 ? '+' : '';
+
+                const html = `
+                    <div class="product-item">
+                        <div class="product-header">
+                            <input type="text" value="${p.name}" onchange="updateProduct(${index}, 'name', this.value)" style="background:transparent; border:none; color:var(--accent-light); font-weight:bold; font-size:1rem; width:150px; outline:none;" placeholder="商品名稱">
+                            ${products.length > 1 ? `<button class="btn-remove" onclick="removeProduct(${index})">刪除</button>` : ''}
+                        </div>
+                        <div class="product-grid">
+                            <div class="input-group">
+                                <label>口數</label>
+                                <input type="number" value="${p.lots}" oninput="updateProduct(${index}, 'lots', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>買進均價</label>
+                                <input type="number" step="0.01" value="${p.entry}" oninput="updateProduct(${index}, 'entry', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>目前市價</label>
+                                <input type="number" step="0.5" value="${p.current}" oninput="updateProduct(${index}, 'current', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>原始保證金(%)</label>
+                                <input type="number" step="0.1" value="${p.imRatio}" oninput="updateProduct(${index}, 'imRatio', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>維持保證金(%)</label>
+                                <input type="number" step="0.1" value="${p.mmRatio}" oninput="updateProduct(${index}, 'mmRatio', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>每口股數</label>
+                                <input type="number" value="${p.shares}" oninput="updateProduct(${index}, 'shares', this.value)">
+                            </div>
+                        </div>
+                        <div class="product-pnl">
+                            單項浮動損益: <span class="${pnlClass}">${pnlSign}${formatMoney(pnl)}</span>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function addProduct() {
+            products.push({
+                id: Date.now(),
+                name: "新商品", lots: 1, entry: 100, current: 100, imRatio: 16.2, mmRatio: 12.42, shares: 2000
+            });
+            renderProducts();
+            calculate();
+        }
+
+        function removeProduct(index) {
+            products.splice(index, 1);
+            renderProducts();
+            calculate();
+        }
+
+        function updateProduct(index, field, value) {
+            if (field === 'name') {
+                products[index][field] = value;
+            } else {
+                products[index][field] = parseFloat(value) || 0;
+            }
+            calculate();
+            const p = products[index];
+            const pnl = (p.current - p.entry) * p.lots * p.shares;
+            const pnlClass = pnl > 0 ? 'text-green' : (pnl < 0 ? 'text-red' : '');
+            const pnlSign = pnl > 0 ? '+' : '';
+            const pnlElements = document.querySelectorAll('.product-pnl span');
+            if(pnlElements[index]) {
+                pnlElements[index].className = pnlClass;
+                pnlElements[index].innerText = `${pnlSign}${formatMoney(pnl)}`;
+            }
+        }
+
+        function calculate() {
+            const balance = parseFloat(document.getElementById('balance').value) || 0;
+            
+            let totalPnL = 0;
+            let totalIM = 0;
+            let totalMM = 0;
+
+            products.forEach(p => {
+                const totalShares = p.lots * p.shares;
+                const contractValue = p.current * totalShares;
+                
+                totalPnL += (p.current - p.entry) * totalShares;
+                totalIM += contractValue * (p.imRatio / 100);
+                totalMM += contractValue * (p.mmRatio / 100);
+            });
+
+            const totalEquity = balance + totalPnL;
+            const excessMargin = totalEquity - totalIM;
+            
+            const availableMargin = totalPnL > 0 ? (excessMargin - totalPnL) : excessMargin;
+            const riskRatio = totalIM > 0 ? (totalEquity / totalIM) * 100 : 0;
+            const buffer = totalEquity - totalMM; 
+
+            const pnlEl = document.getElementById('val_pnl');
+            pnlEl.innerText = formatMoney(totalPnL);
+            pnlEl.className = 'data-value ' + (totalPnL > 0 ? 'text-green' : (totalPnL < 0 ? 'text-red' : ''));
+
+            document.getElementById('val_equity').innerText = formatMoney(totalEquity);
+            document.getElementById('val_im').innerText = formatMoney(totalIM);
+            document.getElementById('val_mm').innerText = formatMoney(totalMM);
+            document.getElementById('val_excess').innerText = formatMoney(excessMargin);
+            document.getElementById('val_available').innerText = formatMoney(availableMargin);
+            
+            const riskEl = document.getElementById('val_risk');
+            riskEl.innerText = riskRatio.toFixed(2) + '%';
+            riskEl.className = 'data-value ' + (riskRatio < 100 ? 'text-red' : 'text-green');
+
+            const bufferPanel = document.getElementById('buffer_panel');
+            const bufferTitle = document.getElementById('buffer_title');
+            const bufferEl = document.getElementById('val_buffer');
+
+            if (buffer < 0) {
+                bufferPanel.className = 'trigger-panel danger';
+                bufferTitle.innerText = '⚠️ 警告：已跌破維持保證金！';
+                bufferEl.innerText = formatMoney(buffer) + ' 元';
+                bufferEl.style.color = 'var(--red-color)';
+            } else {
+                bufferPanel.className = 'trigger-panel';
+                bufferTitle.innerText = '🛡️ 帳戶總體防禦力 (安全氣囊)';
+                bufferEl.innerText = formatMoney(buffer) + ' 元';
+                bufferEl.style.color = 'var(--accent-light)';
+            }
+        }
+
+        window.onload = () => {
+            renderProducts();
+            calculate();
+        };
+    </script>
+</body>
+</html>
