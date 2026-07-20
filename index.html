@@ -41,19 +41,18 @@
             gap: 15px;
         }
 
-        /* 關鍵修正：當手機或平板寬度小於 900px 時的排版優化 */
         @media (max-width: 900px) {
             body {
-                overflow-y: auto; /* 允許整個網頁上下捲動 */
+                overflow-y: auto;
                 height: auto;
             }
             .container {
-                grid-template-columns: 1fr; /* 改為單欄上下堆疊 */
-                height: auto; /* 解除 94vh 高度鎖定，改由內容撐開 */
+                grid-template-columns: 1fr;
+                height: auto;
                 overflow: visible;
             }
             .panel {
-                overflow: visible !important; /* 解除內部 hidden，讓畫面能往下延展 */
+                overflow: visible !important;
                 height: auto !important;
             }
             .product-list {
@@ -90,7 +89,7 @@
         .action-buttons {
             display: flex;
             gap: 6px;
-            flex-wrap: wrap; /* 讓按鈕在手機版可以自動折行 */
+            flex-wrap: wrap;
         }
 
         .global-settings {
@@ -102,11 +101,11 @@
             flex-shrink: 0;
         }
 
-        .input-group { margin-bottom: 0; display: flex; flex-direction: column; justify-content: center; }
-        .input-group label { display: block; margin-bottom: 3px; font-size: 0.8rem; color: var(--text-muted); }
+        .input-group { margin-bottom: 0; display: flex; flex-direction: column; justify-content: center; width: 100%; }
+        .input-group label { display: block; margin-bottom: 3px; font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; }
         .input-group input, .input-group select {
             width: 100%; background-color: var(--bg-color); border: 1px solid var(--border-color);
-            color: var(--text-main); padding: 6px 10px; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box; height: 33px;
+            color: var(--text-main); padding: 6px 8px; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box; height: 35px;
         }
         .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent-color); }
         .input-group input:disabled { background-color: rgba(255,255,255,0.03); color: #64748b; cursor: not-allowed; border-color: #232a38; }
@@ -135,13 +134,22 @@
         .btn-mtx { background-color: #f97316; color: white; }
         .btn-tmf { background-color: #8b5cf6; color: white; }
 
-        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .product-grid-4 { grid-template-columns: repeat(4, 1fr); }
+        /* 電腦版採用 3 欄平均分佈 */
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .product-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
 
-        /* 手機版格子自適應折行 */
+        /* 關鍵修正：手機窄螢幕下，自動重組格子結構，防止寬度被擠壓不均勻 */
         @media (max-width: 480px) {
-            .product-grid { grid-template-columns: repeat(2, 1fr); }
-            .product-grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .product-grid { 
+                grid-template-columns: 1fr 1fr; /* 將原本 3 欄強制改為平衡的 2 欄 */
+            }
+            /* 讓口數單獨佔滿第一橫列，買進均價與目前市價平分第二橫列，這樣框框寬度就絕對完美一致 */
+            .product-grid .input-group:nth-child(1) {
+                grid-column: span 2;
+            }
+            .product-grid-4 { 
+                grid-template-columns: 1fr 1fr; 
+            }
         }
 
         .product-footer {
@@ -300,7 +308,7 @@
                 let marginInputs = '';
                 if (isFixed) {
                     marginInputs = `
-                        <div class="input-grid-4" style="grid-column: span 3; display: grid; gap: 8px;">
+                        <div class="input-grid-4" style="grid-column: span 2; display: grid; gap: 8px;">
                             <div class="input-group">
                                 <label>保證金類型</label>
                                 <select disabled><option>指數固定金額</option></select>
@@ -322,8 +330,8 @@
                 } else {
                     const isCustom = p.level === 'custom';
                     marginInputs = `
-                        <div class="input-grid-4" style="grid-column: span 3; display: grid; gap: 8px;">
-                            <div class="input-group">
+                        <div class="input-grid-4" style="grid-column: span 2; display: grid; gap: 8px;">
+                            <div class="input-group" style="grid-column: span 2;">
                                 <label>保證金級距</label>
                                 <select onchange="changeStockLevel(${index}, this.value)">
                                     <option value="broker" ${p.level === 'broker' ? 'selected' : ''}>券商實際 (15.77%)</option>
@@ -341,7 +349,7 @@
                                 <label>維持保證金(%)</label>
                                 <input type="number" step="0.01" value="${p.mmRatio}" ${!isCustom ? 'disabled' : ''} oninput="updateProduct(${index}, 'mmRatio', this.value)">
                             </div>
-                            <div class="input-group">
+                            <div class="input-group" style="grid-column: span 2;">
                                 <label>每口股數</label>
                                 <input type="number" value="${p.multiplier}" oninput="updateProduct(${index}, 'multiplier', this.value)">
                             </div>
@@ -435,7 +443,6 @@
             let totalIM = 0;
             let totalMM = 0;
 
-            // 1. 計算全局總數
             products.forEach(p => {
                 const totalMultiplier = p.lots * p.multiplier;
                 totalPnL += (p.current - p.entry) * totalMultiplier;
@@ -444,7 +451,6 @@
                     totalIM += p.imFixed * p.lots;
                     totalMM += p.mmFixed * p.lots;
                 } else {
-                    // 精確隔離：單口價值計算四捨五入不受買進均價影響
                     const singleContractValue = p.current * p.multiplier;
                     const singleIM = Math.round(singleContractValue * (p.imRatio / 100));
                     const singleMM = Math.round(singleContractValue * (p.mmRatio / 100));
@@ -464,7 +470,6 @@
 
             const isLiquidated = totalIM > 0 && riskRatio < 25;
 
-            // 2. 更新右側總表 UI
             const pnlEl = document.getElementById('val_pnl');
             pnlEl.innerText = formatMoney(totalPnL);
             pnlEl.className = 'data-value ' + (totalPnL > 0 ? 'text-green' : (totalPnL < 0 ? 'text-red' : ''));
@@ -500,7 +505,6 @@
                 bufferEl.style.color = 'var(--accent-light)';
             }
 
-            // 3. 更新各商品的單項數據
             const pnlElements = document.querySelectorAll('.pnl-val');
             const marginElements = document.querySelectorAll('.trigger-margin-val');
             const liqElements = document.querySelectorAll('.trigger-liq-val');
