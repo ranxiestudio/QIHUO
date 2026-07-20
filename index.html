@@ -19,7 +19,6 @@
             --formula-color: #64748b;
         }
 
-        /* 鎖定全螢幕，防止整個頁面滾動 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             background-color: var(--bg-color);
@@ -33,7 +32,6 @@
             overflow: hidden;
         }
 
-        /* 將版面最大化利用，左右並排 */
         .container {
             max-width: 1200px;
             width: 96vw;
@@ -51,7 +49,6 @@
             }
         }
 
-        /* 面板設定為 flex 容器，高度 100% */
         .panel {
             background-color: var(--panel-bg);
             border-radius: 10px;
@@ -60,7 +57,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* 防止內容撐破面板 */
+            overflow: hidden;
         }
 
         h2 {
@@ -84,192 +81,61 @@
             flex-shrink: 0;
         }
 
-        .input-group {
-            margin-bottom: 0;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 3px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
+        .input-group { margin-bottom: 0; }
+        .input-group label { display: block; margin-bottom: 3px; font-size: 0.8rem; color: var(--text-muted); }
         .input-group input {
-            width: 100%;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            box-sizing: border-box;
+            width: 100%; background-color: var(--bg-color); border: 1px solid var(--border-color);
+            color: var(--text-main); padding: 6px 10px; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;
         }
+        .input-group input:focus { outline: none; border-color: var(--accent-color); }
 
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-
-        /* 產品列表區塊：設定為可內部滾動 */
         .product-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            overflow-y: auto; /* 如果新增太多商品，只在這個區塊內滾動 */
-            flex: 1;
-            padding-right: 5px;
+            display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; padding-right: 5px;
         }
-        
-        /* 美化內部滾動條 */
         .product-list::-webkit-scrollbar { width: 6px; }
         .product-list::-webkit-scrollbar-track { background: transparent; }
         .product-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
 
         .product-item {
-            background-color: var(--card-bg);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            flex-shrink: 0;
+            background-color: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); flex-shrink: 0;
         }
 
-        .product-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: var(--accent-light);
-        }
-
-        .btn-remove {
-            background-color: transparent;
-            color: var(--red-color);
-            border: 1px solid var(--red-color);
-            border-radius: 4px;
-            cursor: pointer;
-            padding: 2px 8px;
-            font-size: 0.75rem;
-        }
-        
+        .product-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--accent-light); }
+        .btn-remove { background-color: transparent; color: var(--red-color); border: 1px solid var(--red-color); border-radius: 4px; cursor: pointer; padding: 2px 8px; font-size: 0.75rem; }
         .btn-remove:hover { background-color: rgba(239, 68, 68, 0.1); }
-
-        .btn-add {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
+        .btn-add { background-color: var(--accent-color); color: white; border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
         .btn-add:hover { background-color: #2563eb; }
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
-        .product-pnl {
-            margin-top: 8px;
-            text-align: right;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            border-top: 1px dashed var(--border-color);
-            padding-top: 6px;
+        .product-footer {
+            margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 6px;
+            display: flex; justify-content: space-between; font-size: 0.85rem;
         }
+        .product-pnl { color: var(--text-muted); }
+        .product-trigger { color: var(--text-muted); }
 
-        /* 右側帳戶總覽：壓縮間距 */
-        .data-list {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            flex: 1;
-        }
-
-        .data-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .data-row:last-child {
-            border-bottom: none;
-        }
-
-        .label-container {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-        }
-
-        .data-label {
-            color: var(--text-main);
-            font-size: 0.95rem;
-        }
-
-        .formula-text {
-            color: var(--formula-color);
-            font-size: 0.75rem;
-            font-family: monospace;
-        }
-
-        .data-value {
-            font-weight: 600;
-            text-align: right;
-            font-size: 1rem;
-            white-space: nowrap;
-        }
+        .data-list { display: flex; flex-direction: column; justify-content: space-around; flex: 1; }
+        .data-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border-color); }
+        .data-row:last-child { border-bottom: none; }
+        .label-container { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+        .data-label { color: var(--text-main); font-size: 0.95rem; }
+        .formula-text { color: var(--formula-color); font-size: 0.75rem; font-family: monospace; }
+        .data-value { font-weight: 600; text-align: right; font-size: 1rem; white-space: nowrap; }
 
         .text-red { color: var(--red-color); }
         .text-green { color: var(--green-color); }
         .text-accent { color: var(--accent-light); font-weight: bold;}
 
-        /* 置底面板：壓縮高度 */
         .trigger-panel {
-            background-color: rgba(59, 130, 246, 0.05);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 10px;
-            text-align: center;
-            flex-shrink: 0;
+            background-color: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px; padding: 12px; margin-top: 10px; text-align: center; flex-shrink: 0;
         }
-        
-        .trigger-panel.danger {
-            background-color: rgba(239, 68, 68, 0.05);
-            border-color: rgba(239, 68, 68, 0.3);
-        }
-
-        .trigger-title {
-            color: var(--accent-light);
-            font-size: 1rem;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
-        
-        .trigger-panel.danger .trigger-title {
-            color: var(--red-color);
-        }
-
-        .trigger-price {
-            font-size: 1.6rem;
-            color: var(--text-main);
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .buffer-desc {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.3;
-        }
+        .trigger-panel.danger { background-color: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.3); }
+        .trigger-title { color: var(--accent-light); font-size: 1rem; margin-bottom: 6px; font-weight: bold; }
+        .trigger-panel.danger .trigger-title { color: var(--red-color); }
+        .trigger-price { font-size: 1.6rem; color: var(--text-main); font-weight: bold; margin-bottom: 5px; }
+        .buffer-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.3; }
     </style>
 </head>
 <body>
@@ -358,11 +224,10 @@
 
             <!-- 核心：多商品總體防禦力分析 -->
             <div class="trigger-panel" id="buffer_panel">
-                <div class="trigger-title" id="buffer_title">🛡️ 帳戶總體防禦力 (安全氣囊)</div>
+                <div class="trigger-title" id="buffer_title">🛡️ 帳戶總體防禦力 (總安全氣囊)</div>
                 <div class="trigger-price" id="val_buffer">0 元</div>
                 <div class="buffer-desc">
-                    多商品模式下無法計算單一斷頭價 (會盈虧互抵)。<br>
-                    此金額代表您的帳戶**還能承受多少總虧損**才被追繳。<br>
+                    多商品盈虧互抵，此為帳戶**還能承受的總虧損金額**。<br>
                     (公式：總權益數 - 總維持保證金)
                 </div>
             </div>
@@ -374,19 +239,13 @@
             { id: 1, name: "聯電", lots: 6, entry: 163.0833, current: 138.5, imRatio: 16.66, mmRatio: 12.77, shares: 2000 }
         ];
 
-        function formatMoney(number) {
-            return Math.round(number).toLocaleString('en-US');
-        }
+        function formatMoney(number) { return Math.round(number).toLocaleString('en-US'); }
 
         function renderProducts() {
             const container = document.getElementById('product-container');
             container.innerHTML = '';
             
             products.forEach((p, index) => {
-                const pnl = (p.current - p.entry) * p.lots * p.shares;
-                const pnlClass = pnl > 0 ? 'text-green' : (pnl < 0 ? 'text-red' : '');
-                const pnlSign = pnl > 0 ? '+' : '';
-
                 const html = `
                     <div class="product-item">
                         <div class="product-header">
@@ -419,8 +278,13 @@
                                 <input type="number" value="${p.shares}" oninput="updateProduct(${index}, 'shares', this.value)">
                             </div>
                         </div>
-                        <div class="product-pnl">
-                            單項浮動損益: <span class="${pnlClass}">${pnlSign}${formatMoney(pnl)}</span>
+                        <div class="product-footer">
+                            <div class="product-trigger">
+                                🛡️ 單項斷頭價(假設其他不變): <span class="trigger-val">--</span>
+                            </div>
+                            <div class="product-pnl">
+                                浮動損益: <span class="pnl-val">--</span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -430,8 +294,7 @@
 
         function addProduct() {
             products.push({
-                id: Date.now(),
-                name: "新商品", lots: 1, entry: 100, current: 100, imRatio: 16.2, mmRatio: 12.42, shares: 2000
+                id: Date.now(), name: "新商品", lots: 1, entry: 100, current: 100, imRatio: 16.2, mmRatio: 12.42, shares: 2000
             });
             renderProducts();
             calculate();
@@ -449,16 +312,7 @@
             } else {
                 products[index][field] = parseFloat(value) || 0;
             }
-            calculate();
-            const p = products[index];
-            const pnl = (p.current - p.entry) * p.lots * p.shares;
-            const pnlClass = pnl > 0 ? 'text-green' : (pnl < 0 ? 'text-red' : '');
-            const pnlSign = pnl > 0 ? '+' : '';
-            const pnlElements = document.querySelectorAll('.product-pnl span');
-            if(pnlElements[index]) {
-                pnlElements[index].className = pnlClass;
-                pnlElements[index].innerText = `${pnlSign}${formatMoney(pnl)}`;
-            }
+            calculate(); 
         }
 
         function calculate() {
@@ -468,6 +322,7 @@
             let totalIM = 0;
             let totalMM = 0;
 
+            // 1. 計算全局總數
             products.forEach(p => {
                 const totalShares = p.lots * p.shares;
                 const contractValue = p.current * totalShares;
@@ -479,11 +334,11 @@
 
             const totalEquity = balance + totalPnL;
             const excessMargin = totalEquity - totalIM;
-            
             const availableMargin = totalPnL > 0 ? (excessMargin - totalPnL) : excessMargin;
             const riskRatio = totalIM > 0 ? (totalEquity / totalIM) * 100 : 0;
             const buffer = totalEquity - totalMM; 
 
+            // 2. 更新右側總表 UI
             const pnlEl = document.getElementById('val_pnl');
             pnlEl.innerText = formatMoney(totalPnL);
             pnlEl.className = 'data-value ' + (totalPnL > 0 ? 'text-green' : (totalPnL < 0 ? 'text-red' : ''));
@@ -509,10 +364,48 @@
                 bufferEl.style.color = 'var(--red-color)';
             } else {
                 bufferPanel.className = 'trigger-panel';
-                bufferTitle.innerText = '🛡️ 帳戶總體防禦力 (安全氣囊)';
+                bufferTitle.innerText = '🛡️ 帳戶總體防禦力 (總安全氣囊)';
                 bufferEl.innerText = formatMoney(buffer) + ' 元';
                 bufferEl.style.color = 'var(--accent-light)';
             }
+
+            // 3. 更新各商品的單項損益與「動態斷頭價」
+            const pnlElements = document.querySelectorAll('.pnl-val');
+            const triggerElements = document.querySelectorAll('.trigger-val');
+            
+            products.forEach((p, index) => {
+                const totalShares = p.lots * p.shares;
+                
+                // 更新單項損益
+                const pnl = (p.current - p.entry) * totalShares;
+                if(pnlElements[index]) {
+                    pnlElements[index].innerText = (pnl > 0 ? '+' : '') + formatMoney(pnl);
+                    pnlElements[index].className = 'pnl-val ' + (pnl > 0 ? 'text-green' : (pnl < 0 ? 'text-red' : ''));
+                }
+
+                // 計算單項斷頭價：假設其他商品價格不變，該商品跌多少會耗盡總 Buffer
+                if(triggerElements[index]) {
+                    if (totalShares === 0) {
+                        triggerElements[index].innerText = "--";
+                        triggerElements[index].className = "trigger-val";
+                    } else {
+                        const mmRatioDec = p.mmRatio / 100;
+                        // 公式：X = 目前市價 - (總剩餘緩衝資金 / (總股數 * (1 - 維持率)))
+                        const triggerPrice = p.current - (buffer / (totalShares * (1 - mmRatioDec)));
+                        
+                        if (buffer < 0) {
+                            triggerElements[index].innerText = "已斷頭";
+                            triggerElements[index].className = "trigger-val text-red";
+                        } else if (triggerPrice <= 0) {
+                            triggerElements[index].innerText = "極度安全";
+                            triggerElements[index].className = "trigger-val text-green";
+                        } else {
+                            triggerElements[index].innerText = triggerPrice.toFixed(2) + " 元";
+                            triggerElements[index].className = "trigger-val text-accent";
+                        }
+                    }
+                }
+            });
         }
 
         window.onload = () => {
