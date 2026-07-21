@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>多商品期貨保證金與投資組合試算系統 - 智慧行動自適應版</title>
+    <title>多商品期貨保證金與投資組合試算系統</title>
     <style>
         :root {
             --bg-color: #0b0e14;
@@ -23,82 +23,39 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            margin: 0;
-            padding: 10px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center; box-sizing: border-box;
         }
 
         .container {
-            max-width: 1200px;
-            width: 100%;
-            height: 94vh;
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            gap: 15px;
+            max-width: 1200px; width: 100%; height: 94vh;
+            display: grid; grid-template-columns: 1.4fr 1fr; gap: 15px; padding: 10px; box-sizing: border-box;
         }
 
         @media (max-width: 900px) {
-            body {
-                overflow-y: auto;
-                height: auto;
-            }
-            .container {
-                grid-template-columns: 1fr;
-                height: auto;
-                overflow: visible;
-            }
-            .panel {
-                overflow: visible !important;
-                height: auto !important;
-            }
-            .product-list {
-                overflow: visible !important;
-                height: auto !important;
-            }
+            body { overflow-y: auto; height: auto; }
+            .container { grid-template-columns: 1fr; height: auto; overflow: visible; }
+            .panel { overflow: visible !important; height: auto !important; }
+            .product-list { overflow: visible !important; height: auto !important; }
         }
 
         .panel {
-            background-color: var(--panel-bg);
-            border-radius: 10px;
-            padding: 15px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            background-color: var(--panel-bg); border-radius: 10px; padding: 15px;
+            border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; overflow: hidden;
         }
 
         h2 {
-            font-size: 1.1rem;
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: var(--text-main);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            font-size: 1.1rem; margin-top: 0; margin-bottom: 10px; color: var(--text-main);
+            border-bottom: 1px solid var(--border-color); padding-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
+        .action-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
 
         .global-settings {
-            margin-bottom: 10px;
-            background-color: var(--card-bg);
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            flex-shrink: 0;
+            margin-bottom: 10px; background-color: var(--card-bg); padding: 10px 15px; border-radius: 8px;
+            border: 1px solid var(--border-color); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
         }
 
         .input-group { margin-bottom: 0; display: flex; flex-direction: column; justify-content: center; width: 100%; }
@@ -108,48 +65,30 @@
             color: var(--text-main); padding: 6px 8px; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box; height: 35px;
         }
         .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent-color); }
-        .input-group input:disabled { background-color: rgba(255,255,255,0.03); color: #64748b; cursor: not-allowed; border-color: #232a38; }
 
-        .product-list {
-            display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; padding-right: 5px;
-        }
+        .product-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; padding-right: 5px; }
         .product-list::-webkit-scrollbar { width: 6px; }
-        .product-list::-webkit-scrollbar-track { background: transparent; }
         .product-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
 
-        .product-item {
-            background-color: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); flex-shrink: 0;
-        }
-
-        .product-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--accent-light); align-items: center;}
+        .product-item { background-color: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); flex-shrink: 0; }
+        .product-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--accent-light); align-items: center; }
         .product-tag { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.1); margin-left: 8px; color: var(--text-muted); }
-        
+
         .btn-remove { background-color: transparent; color: var(--red-color); border: 1px solid var(--red-color); border-radius: 4px; cursor: pointer; padding: 2px 8px; font-size: 0.75rem; }
-        .btn-remove:hover { background-color: rgba(239, 68, 68, 0.1); }
-        
-        .btn-add { border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: opacity 0.2s;}
+        .btn-remove:hover { background-color: rgba(239,68,68,0.1); }
+
+        .btn-add { border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: opacity 0.2s; }
         .btn-add:hover { opacity: 0.8; }
         .btn-stock { background-color: var(--accent-color); color: white; }
         .btn-tx { background-color: #ef4444; color: white; }
         .btn-mtx { background-color: #f97316; color: white; }
         .btn-tmf { background-color: #8b5cf6; color: white; }
 
-        /* 電腦版採用 3 欄平均分佈 */
         .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .product-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
 
-        /* 關鍵修正：手機窄螢幕下，自動重組格子結構，防止寬度被擠壓不均勻 */
         @media (max-width: 480px) {
-            .product-grid { 
-                grid-template-columns: 1fr 1fr; /* 將原本 3 欄強制改為平衡的 2 欄 */
-            }
-            /* 讓口數單獨佔滿第一橫列，買進均價與目前市價平分第二橫列，這樣框框寬度就絕對完美一致 */
-            .product-grid .input-group:nth-child(1) {
-                grid-column: span 2;
-            }
-            .product-grid-4 { 
-                grid-template-columns: 1fr 1fr; 
-            }
+            .global-settings { grid-template-columns: 1fr; }
+            .product-grid { grid-template-columns: 1fr 1fr; }
         }
 
         .product-footer {
@@ -159,28 +98,73 @@
         .product-pnl { color: var(--text-muted); }
         .product-trigger { color: var(--text-muted); min-width: 200px; }
 
-        .data-list { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 10px; }
+        .data-list { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 8px; }
         .data-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border-color); }
         .data-row:last-child { border-bottom: none; }
         .label-container { display: flex; flex-direction: column; gap: 2px; flex: 1; padding-right: 10px; }
         .data-label { color: var(--text-main); font-size: 0.95rem; }
-        .formula-text { color: var(--formula-color); font-size: 0.75rem; font-family: monospace; }
+        .formula-text { color: var(--formula-color); font-size: 0.72rem; font-family: monospace; }
         .data-value { font-weight: 600; text-align: right; font-size: 1rem; white-space: nowrap; }
 
         .text-red { color: var(--red-color); }
         .text-green { color: var(--green-color); }
-        .text-accent { color: var(--accent-light); font-weight: bold;}
+        .text-accent { color: var(--accent-light); font-weight: bold; }
 
         .trigger-panel {
-            background-color: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 8px; padding: 12px; margin-top: 15px; text-align: center; flex-shrink: 0;
+            background-color: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 8px; padding: 12px; margin-top: 12px; text-align: center; flex-shrink: 0;
         }
-        .trigger-panel.danger { background-color: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.3); }
-        .trigger-panel.fatal { background-color: rgba(220, 38, 38, 0.15); border-color: rgba(220, 38, 38, 0.6); }
+        .trigger-panel.danger { background-color: rgba(239,68,68,0.05); border-color: rgba(239,68,68,0.3); }
+        .trigger-panel.fatal { background-color: rgba(220,38,38,0.15); border-color: rgba(220,38,38,0.6); }
         .trigger-title { color: var(--accent-light); font-size: 1rem; margin-bottom: 6px; font-weight: bold; }
         .trigger-panel.danger .trigger-title, .trigger-panel.fatal .trigger-title { color: var(--red-color); }
         .trigger-price { font-size: 1.6rem; color: var(--text-main); font-weight: bold; margin-bottom: 5px; }
         .buffer-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.3; }
+
+        /* ---- 一鍵重算保證金基準 ---- */
+        .btn-recalc {
+            width: 100%; margin: 4px 0 10px; border: 1px dashed var(--accent-color);
+            background: rgba(59,130,246,0.08); color: var(--accent-light);
+            border-radius: 8px; padding: 8px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: background 0.2s;
+        }
+        .btn-recalc:hover { background: rgba(59,130,246,0.18); }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; justify-content: center; align-items: center; padding: 16px; box-sizing: border-box; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 640px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border-color); font-size: 1.05rem; font-weight: bold; }
+        .modal-header button { background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
+        .modal-header button:hover { color: var(--text-main); }
+        .modal-body { padding: 16px 18px; overflow-y: auto; }
+        .modal-body::-webkit-scrollbar { width: 6px; }
+        .modal-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+        .mode-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+        .mode-tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-muted); }
+        .mode-tab.active { border-color: var(--accent-color); color: var(--accent-light); background: rgba(59,130,246,0.1); font-weight: bold; }
+
+        .hint-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 12px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px; }
+        .hint-box code { color: var(--accent-light); font-family: monospace; }
+
+        #marginPaste { width: 100%; min-height: 120px; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; padding: 10px; font-family: monospace; font-size: 0.85rem; box-sizing: border-box; resize: vertical; }
+        #marginPaste:focus { outline: none; border-color: var(--accent-color); }
+
+        .modal-options { display: flex; align-items: center; gap: 8px; margin: 10px 0; font-size: 0.85rem; color: var(--text-muted); }
+        .modal-actions { display: flex; gap: 8px; margin-top: 4px; }
+        .modal-actions button { flex: 1; border: none; border-radius: 8px; padding: 10px; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
+        .btn-parse { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color) !important; }
+        .btn-apply { background: var(--accent-color); color: white; }
+        .btn-apply:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .preview-area { margin-top: 14px; }
+        .preview-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .preview-table th, .preview-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+        .preview-table th { color: var(--text-muted); font-weight: normal; }
+        .preview-table td.num { text-align: right; font-family: monospace; }
+        .status-update { color: var(--green-color); }
+        .status-new { color: var(--accent-light); }
+        .status-skip { color: var(--text-muted); }
+        .preview-summary { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -197,52 +181,56 @@
                     <button class="btn-add btn-tmf" onclick="addProduct('TMF')">+ 微台</button>
                 </div>
             </h2>
-            
+
             <div class="global-settings">
                 <div class="input-group">
                     <label>🏦 帳戶總入金 (本日餘額)</label>
                     <input type="number" id="balance" value="863469" oninput="calculate()">
                 </div>
+                <div class="input-group">
+                    <label>💧 出金保留款 (券商額外保留，可設 0)</label>
+                    <input type="number" id="withdrawReserve" value="42000" oninput="calculate()">
+                </div>
             </div>
-            
-            <div class="product-list" id="product-container">
-                <!-- 商品卡片動態生成 -->
-            </div>
+
+            <button class="btn-recalc" onclick="openMarginTool()">🔄 一鍵重算保證金基準（貼上期交所／券商保證金表）</button>
+
+            <div class="product-list" id="product-container"></div>
         </div>
 
         <!-- 右側：帳戶總覽與分析 -->
         <div class="panel">
             <h2>📊 帳戶總歸戶狀態 (Portfolio Summary)</h2>
-            
+
             <div class="data-list">
                 <div class="data-row">
                     <div class="label-container">
                         <span class="data-label">總未沖銷期貨浮動損益</span>
-                        <span class="formula-text">公式：Σ (各商品市價 - 均價) × 乘數</span>
+                        <span class="formula-text">Σ 方向 × (市價 − 均價) × 乘數 × 口數</span>
                     </div>
                     <span class="data-value" id="val_pnl">0</span>
                 </div>
-                
+
                 <div class="data-row">
                     <div class="label-container">
                         <span class="data-label">總權益數 (帳戶總淨值)</span>
-                        <span class="formula-text">公式：本日餘額 + 總浮動損益</span>
+                        <span class="formula-text">本日餘額 + 總浮動損益</span>
                     </div>
                     <span class="data-value" id="val_equity">0</span>
                 </div>
-                
+
                 <div class="data-row">
                     <div class="label-container">
                         <span class="data-label">總原始保證金</span>
-                        <span class="formula-text">公式：Σ (各商品所需原始保證金)</span>
+                        <span class="formula-text">Σ 原始保證金/口 × 口數</span>
                     </div>
                     <span class="data-value" id="val_im">0</span>
                 </div>
-                
+
                 <div class="data-row">
                     <div class="label-container">
                         <span class="data-label">總維持保證金</span>
-                        <span class="formula-text">公式：Σ (各商品所需維持保證金)</span>
+                        <span class="formula-text">Σ 維持保證金/口 × 口數</span>
                     </div>
                     <span class="data-value" id="val_mm">0</span>
                 </div>
@@ -250,7 +238,7 @@
                 <div class="data-row">
                     <div class="label-container">
                         <span class="data-label">超額 / 追繳保證金</span>
-                        <span class="formula-text">公式：總權益數 - 總原始保證金</span>
+                        <span class="formula-text">總權益數 − 總原始保證金</span>
                     </div>
                     <span class="data-value" id="val_excess">0</span>
                 </div>
@@ -258,15 +246,15 @@
                 <div class="data-row">
                     <div class="label-container">
                         <span class="data-label">可動用(出金)保證金</span>
-                        <span class="formula-text">公式：超額保證金 - Max(0, 總浮動損益)</span>
+                        <span class="formula-text">超額 − Max(0, 浮動獲利) − 出金保留款</span>
                     </div>
                     <span class="data-value text-red" id="val_available">0</span>
                 </div>
-                
+
                 <div class="data-row">
                     <div class="label-container">
                         <span class="data-label">帳戶總風險指標</span>
-                        <span class="formula-text">公式：(權益數 ÷ 原始保證金) × 100%</span>
+                        <span class="formula-text">權益數 ÷ 風險指標保證金 × 100%</span>
                     </div>
                     <span class="data-value text-red" id="val_risk">0.00%</span>
                 </div>
@@ -276,23 +264,91 @@
                 <div class="trigger-title" id="buffer_title">🛡️ 帳戶總體防禦力 (總安全氣囊)</div>
                 <div class="trigger-price" id="val_buffer">0 元</div>
                 <div class="buffer-desc">
-                    多商品盈虧互抵，此為帳戶**還能承受的總虧損金額**。<br>
-                    (公式：總權益數 - 總維持保證金)
+                    多商品盈虧互抵，此為帳戶<strong>還能承受的總虧損金額</strong>。<br>
+                    (公式：總權益數 − 總維持保證金)
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 一鍵重算保證金基準 -->
+    <div class="modal-overlay" id="marginModal" onclick="if(event.target===this) closeMarginTool()">
+        <div class="modal">
+            <div class="modal-header">
+                <span>🔄 一鍵重算保證金基準</span>
+                <button onclick="closeMarginTool()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="mode-tabs">
+                    <div class="mode-tab active" id="tab-amount" onclick="setMarginMode('amount')">① 直接金額（每口 IM／MM）</div>
+                    <div class="mode-tab" id="tab-ratio" onclick="setMarginMode('ratio')">② 依比例試算（結算價 × 比例）</div>
+                </div>
+
+                <div class="hint-box" id="hint-amount">
+                    每行一檔，欄位順序：<code>名稱／代碼　原始保證金/口　維持保證金/口　[風險保證金/口]</code><br>
+                    分隔可用 <code>Tab</code>、逗號或空白（直接從 Excel／網頁表格複製貼上即可）。第 4 欄選填。<br>
+                    範例：<code>聯電期　41634　31919　45533</code>
+                </div>
+                <div class="hint-box" id="hint-ratio" style="display:none;">
+                    每行一檔，欄位順序：<code>名稱／代碼　結算價（基準價）　原始比例%　維持比例%</code><br>
+                    每口金額 = 結算價 × 每口股數 × 比例%。乘數取用「已匹配商品的乘數」，新增商品預設 2000 股。<br>
+                    範例：<code>聯電期　128.5　16.2　12.42</code>
+                </div>
+
+                <textarea id="marginPaste" placeholder="在此貼上保證金表…（含標題列也可以，系統會自動辨識欄位）"></textarea>
+
+                <label class="modal-options">
+                    <input type="checkbox" id="autoAddUnmatched"> 未匹配的商品自動新增為股票期貨
+                </label>
+
+                <div class="modal-actions">
+                    <button class="btn-parse" onclick="parseMarginTable()">解析預覽</button>
+                    <button class="btn-apply" id="applyBtn" onclick="applyMarginTable()" disabled>套用變更</button>
+                </div>
+
+                <div class="preview-area" id="previewArea"></div>
+            </div>
+        </div>
+    </div>
+
+    <datalist id="ssfList"></datalist>
+
     <script>
-        const templates = {
-            'stock': { type: 'ratio', name: "新商品期貨", lots: 1, entry: 100, current: 100, level: 'broker', imRatio: 15.77, mmRatio: 12.09, multiplier: 2000, imFixed: 0, mmFixed: 0 },
-            'TX': { type: 'fixed', name: "大臺指期 (大台)", lots: 1, entry: 43000, current: 43000, level: 'fixed', imRatio: 0, mmRatio: 0, multiplier: 200, imFixed: 636000, mmFixed: 488000 },
-            'MTX': { type: 'fixed', name: "小型臺指期 (小台)", lots: 1, entry: 43000, current: 43000, level: 'fixed', imRatio: 0, mmRatio: 0, multiplier: 50, imFixed: 159000, mmFixed: 122000 },
-            'TMF': { type: 'fixed', name: "微型臺指期 (微台)", lots: 1, entry: 43000, current: 43000, level: 'fixed', imRatio: 0, mmRatio: 0, multiplier: 10, imFixed: 31800, mmFixed: 24400 }
+        /*
+         * 保證金模型：台股股票期貨保證金 = 期交所依「標的股票結算價 × 股數 × 比例」公布的每口固定金額，
+         * 並非用成交均價 × 比例計算。故一律採「每口固定保證金」模型（與大小台一致）。
+         *   imPerLot / mmPerLot : 現行原始 / 維持保證金（每口）
+         *   riskImPerLot        : 風險指標保證金（每口），通常為開倉已收保證金；留空同原始
+         *   dir                 : 部位方向，+1 買進(多)、-1 賣出(空)
+         */
+
+        // 期交所股票期貨保證金「適用比例」三級距（原始/維持，%）— 2026 現行公開值
+        // 結算比例 10/12/15%，維持 = 結算×1.035，原始 = 結算×1.35
+        const SSF_TIERS = {
+            '1': { im: 13.50, mm: 10.35 },
+            '2': { im: 16.20, mm: 12.42 },
+            '3': { im: 20.25, mm: 15.53 }
         };
 
+        // 期交所全部 291 檔股票期貨 + 24 檔 ETF 期貨（比例/固定金額）更新日 2026/07/17
+        const SSF_DB=[{c:"DFF",id:"1101",n:"台泥期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"DYF",id:"1102",n:"亞泥期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"DZF",id:"1210",n:"大成期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CQF",id:"1216",n:"統一期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CFF",id:"1301",n:"台塑期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"CAF",id:"1303",n:"南亞期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"EEF",id:"1312",n:"國喬期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"EGF",id:"1314",n:"中石化期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"EHF",id:"1319",n:"東陽期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"DGF",id:"1326",n:"台化期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"CRF",id:"1402",n:"遠東新期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"EKF",id:"1440",n:"南紡期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"LWF",id:"1476",n:"儒鴻期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"KSF",id:"1477",n:"聚陽期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"SCF",id:"1477",n:"小型聚陽期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"UAF",id:"1503",n:"士電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"EMF",id:"1504",n:"東元期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"SDF",id:"1513",n:"中興電期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"ORF",id:"1536",n:"和大期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"EOF",id:"1560",n:"中砂期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"MYF",id:"1565",n:"精華期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"OMF",id:"1565",n:"小型精華期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"EPF",id:"1590",n:"亞德客-KY期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"CSF",id:"1605",n:"華新期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"VAF",id:"1608",n:"華榮期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"RJF",id:"1609",n:"大亞期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QOF",id:"1717",n:"長興期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"EYF",id:"1718",n:"中纖期貨",k:"s",t:"自訂",m:2000,im:27.0,mm:20.7},{c:"EZF",id:"1722",n:"台肥期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"SAF",id:"1795",n:"美時期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"KUF",id:"1802",n:"台玻期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"QPF",id:"1904",n:"正隆期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"SBF",id:"1905",n:"華紙期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QKF",id:"1907",n:"永豐餘期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"OSF",id:"1909",n:"榮成期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CBF",id:"2002",n:"中鋼期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"FBF",id:"2006",n:"東和鋼鐵期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"FEF",id:"2027",n:"大成鋼期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"FFF",id:"2049",n:"上銀期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"QMF",id:"2049",n:"小型上銀期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"FGF",id:"2059",n:"川湖期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"SVF",id:"2059",n:"小型川湖期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"FKF",id:"2105",n:"正新期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"FNF",id:"2201",n:"裕隆期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"ODF",id:"2231",n:"為升期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"FQF",id:"2301",n:"光寶科期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"CCF",id:"2303",n:"聯電期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"FRF",id:"2308",n:"台達電期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"RVF",id:"2308",n:"小型台達電期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"FSF",id:"2312",n:"金寶期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"FTF",id:"2313",n:"華通期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"DHF",id:"2317",n:"鴻海期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"CUF",id:"2323",n:"中環期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"CGF",id:"2324",n:"仁寶期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"LXF",id:"2327",n:"國巨期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"QEF",id:"2327",n:"小型國巨期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"KWF",id:"2328",n:"廣宇期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"UXF",id:"2329",n:"華泰期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"CDF",id:"2330",n:"台積電期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"QFF",id:"2330",n:"小型台積電期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"FVF",id:"2331",n:"精英期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"FWF",id:"2332",n:"友訊期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"DIF",id:"2337",n:"旺宏期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"QVF",id:"2338",n:"光罩期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"FYF",id:"2340",n:"台亞期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"FZF",id:"2344",n:"華邦電期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"OPF",id:"2345",n:"智邦期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"SEF",id:"2345",n:"小型智邦期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"GAF",id:"2347",n:"聯強期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CWF",id:"2352",n:"佳世達期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"DSF",id:"2353",n:"宏碁期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"GCF",id:"2354",n:"鴻準期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"MBF",id:"2355",n:"敬鵬期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"LQF",id:"2356",n:"英業達期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"DJF",id:"2357",n:"華碩期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QRF",id:"2357",n:"小型華碩期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"MJF",id:"2360",n:"致茂期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"VDF",id:"2360",n:"小型致茂期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"VBF",id:"2367",n:"燿華期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"RKF",id:"2368",n:"金像電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"VGF",id:"2368",n:"小型金像電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"CXF",id:"2371",n:"大同期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"GHF",id:"2376",n:"技嘉期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"SLF",id:"2376",n:"小型技嘉期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"GIF",id:"2377",n:"微星期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"GJF",id:"2379",n:"瑞昱期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QGF",id:"2379",n:"小型瑞昱期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"DKF",id:"2382",n:"廣達期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PJF",id:"2383",n:"台光電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"SFF",id:"2383",n:"小型台光電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"GKF",id:"2385",n:"群光期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"QWF",id:"2388",n:"威盛期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"GLF",id:"2392",n:"正崴期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"GMF",id:"2393",n:"億光期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"VIF",id:"2395",n:"研華期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"GNF",id:"2401",n:"凌陽期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"GOF",id:"2404",n:"漢唐期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"UZF",id:"2404",n:"小型漢唐期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"CYF",id:"2408",n:"南亞科期貨",k:"s",t:"自訂",m:2000,im:22.95,mm:17.6},{c:"CHF",id:"2409",n:"友達期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"DLF",id:"2412",n:"中華電期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"VCF",id:"2421",n:"建準期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"MKF",id:"2439",n:"美律期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"QTF",id:"2441",n:"超豐期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"GRF",id:"2449",n:"京元電子期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"DVF",id:"2454",n:"聯發科期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PUF",id:"2454",n:"小型聯發科期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"GUF",id:"2455",n:"全新期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"GVF",id:"2457",n:"飛宏期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"GWF",id:"2458",n:"義隆期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"GXF",id:"2474",n:"可成期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"GYF",id:"2481",n:"強茂期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"GZF",id:"2485",n:"兆赫期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UTF",id:"2486",n:"一詮期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"HAF",id:"2489",n:"瑞軒期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"HBF",id:"2492",n:"華新科期貨",k:"s",t:"自訂",m:2000,im:40.5,mm:31.05},{c:"HCF",id:"2498",n:"宏達電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"HHF",id:"2515",n:"中工期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"HIF",id:"2520",n:"冠德期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"HLF",id:"2542",n:"興富發期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"HOF",id:"2548",n:"華固期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CZF",id:"2603",n:"長榮期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"HQF",id:"2605",n:"新興期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QCF",id:"2606",n:"裕民期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"DAF",id:"2609",n:"陽明期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"DBF",id:"2610",n:"華航期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"QXF",id:"2615",n:"萬海期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"HSF",id:"2618",n:"長榮航期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"PGF",id:"2633",n:"台灣高鐵期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"RCF",id:"2634",n:"漢翔期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"DCF",id:"2801",n:"彰銀期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"IAF",id:"2834",n:"臺企銀期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CJF",id:"2880",n:"華南金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CEF",id:"2881",n:"富邦金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CKF",id:"2882",n:"國泰金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"LRF",id:"2883",n:"凱基金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"DNF",id:"2884",n:"玉山金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"DOF",id:"2885",n:"元大金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CLF",id:"2886",n:"兆豐金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CMF",id:"2887",n:"台新新光金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"DEF",id:"2890",n:"永豐金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"CNF",id:"2891",n:"中信金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"DPF",id:"2892",n:"第一金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"IHF",id:"2913",n:"農林期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"DWF",id:"2915",n:"潤泰全期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"SJF",id:"3005",n:"神基期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"IIF",id:"3006",n:"晶豪科期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"IJF",id:"3008",n:"大立光期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"OLF",id:"3008",n:"小型大立光期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"RAF",id:"3017",n:"奇鋐期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UHF",id:"3017",n:"小型奇鋐期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"IMF",id:"3019",n:"亞光期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"IOF",id:"3034",n:"聯詠期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"QHF",id:"3034",n:"小型聯詠期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"IPF",id:"3035",n:"智原期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"IQF",id:"3036",n:"文曄期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"IRF",id:"3037",n:"欣興期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"ITF",id:"3042",n:"晶技期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"LBF",id:"3044",n:"健鼎期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"LCF",id:"3045",n:"台灣大期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"QQF",id:"3078",n:"僑威期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"OTF",id:"3081",n:"聯亞期貨",k:"s",t:"自訂",m:2000,im:22.95,mm:17.6},{c:"NAF",id:"3105",n:"穩懋期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"QIF",id:"3105",n:"小型穩懋期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"NBF",id:"3152",n:"璟德期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"IXF",id:"3189",n:"景碩期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"NCF",id:"3211",n:"順達期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"VJF",id:"3211",n:"小型順達期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PAF",id:"3227",n:"原相期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"DXF",id:"3231",n:"緯創期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"NDF",id:"3260",n:"威剛期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"NEF",id:"3264",n:"欣銓期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PXF",id:"3293",n:"鈊象期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"PYF",id:"3293",n:"小型鈊象期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"PTF",id:"3324",n:"雙鴻期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"ULF",id:"3324",n:"小型雙鴻期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"QLF",id:"3374",n:"精材期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"IYF",id:"3376",n:"新日興期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"IZF",id:"3380",n:"明泰期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"LEF",id:"3406",n:"玉晶光期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QJF",id:"3406",n:"小型玉晶光期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"JBF",id:"3443",n:"創意期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"RWF",id:"3443",n:"小型創意期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"DQF",id:"3481",n:"群創期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PIF",id:"3529",n:"力旺期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"RSF",id:"3529",n:"小型力旺期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"QDF",id:"3532",n:"台勝科期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"JFF",id:"3533",n:"嘉澤期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"RFF",id:"3533",n:"小型嘉澤期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"OUF",id:"3552",n:"同致期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"JMF",id:"3653",n:"健策期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"RGF",id:"3653",n:"小型健策期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"UMF",id:"3661",n:"世芯-KY期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UOF",id:"3661",n:"小型世芯-KY期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"VEF",id:"3665",n:"貿聯-KY期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"VFF",id:"3665",n:"小型貿聯-KY期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"JNF",id:"3673",n:"TPK-KY期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"SYF",id:"3680",n:"家登期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"SZF",id:"3680",n:"小型家登期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"NGF",id:"3691",n:"碩禾期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"JPF",id:"3702",n:"大聯大期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"PSF",id:"3706",n:"神達期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"OZF",id:"3711",n:"日月光投控期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QBF",id:"3714",n:"富采期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"NIF",id:"4123",n:"晟德期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"RDF",id:"4128",n:"中天期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"PCF",id:"4162",n:"智擎期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"PDF",id:"4736",n:"泰博期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"RNF",id:"4743",n:"合一期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"LTF",id:"4904",n:"遠傳期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"REF",id:"4919",n:"新唐期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"JSF",id:"4938",n:"和碩期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"LUF",id:"4958",n:"臻鼎-KY期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"NJF",id:"5009",n:"榮剛期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"PHF",id:"5269",n:"祥碩期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PNF",id:"5269",n:"小型祥碩期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PZF",id:"5274",n:"信驊期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"QAF",id:"5274",n:"小型信驊期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"NLF",id:"5347",n:"世界期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"NMF",id:"5371",n:"中光電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"RBF",id:"5388",n:"中磊期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"PEF",id:"5425",n:"台半期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PPF",id:"5457",n:"宣德期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"NOF",id:"5483",n:"中美晶期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"JWF",id:"5534",n:"長虹期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"LVF",id:"5871",n:"中租-KY期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"UEF",id:"5876",n:"上海商銀期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"LOF",id:"5880",n:"合庫金期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"RPF",id:"5904",n:"寶雅期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"RRF",id:"5904",n:"小型寶雅期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"JXF",id:"6005",n:"群益證期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"OEF",id:"6116",n:"彩晶期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"NQF",id:"6121",n:"新普期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"UBF",id:"6139",n:"亞翔期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"VKF",id:"6139",n:"小型亞翔期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"NSF",id:"6147",n:"頎邦期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"JZF",id:"6153",n:"嘉聯益期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PKF",id:"6173",n:"信昌電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"KAF",id:"6176",n:"瑞儀期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"PLF",id:"6182",n:"合晶期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UCF",id:"6188",n:"廣明期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"KBF",id:"6213",n:"聯茂期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UVF",id:"6223",n:"旺矽期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UWF",id:"6223",n:"小型旺矽期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"KCF",id:"6239",n:"力成期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"ROF",id:"6245",n:"立端期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"MQF",id:"6257",n:"矽格期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"LIF",id:"6269",n:"台郡期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"KDF",id:"6271",n:"同欣電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"OVF",id:"6274",n:"台燿期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"KEF",id:"6278",n:"台表科期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"OHF",id:"6279",n:"胡連期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"KFF",id:"6282",n:"康舒期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"KGF",id:"6285",n:"啟碁期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UYF",id:"6290",n:"良維期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"OQF",id:"6414",n:"樺漢期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"RLF",id:"6443",n:"元晶期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UPF",id:"6472",n:"保瑞期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"UQF",id:"6472",n:"小型保瑞期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"OWF",id:"6488",n:"環球晶期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PBF",id:"6488",n:"小型環球晶期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UFF",id:"6505",n:"台塑化期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"OXF",id:"6510",n:"精測期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"OYF",id:"6510",n:"小型精測期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UGF",id:"6526",n:"達發期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"UIF",id:"6526",n:"小型達發期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QYF",id:"6547",n:"高端疫苗期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PVF",id:"6669",n:"緯穎期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PWF",id:"6669",n:"小型緯穎期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"UUF",id:"6757",n:"台灣虎航期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QZF",id:"6770",n:"力積電期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"KIF",id:"8039",n:"台虹期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"NUF",id:"8044",n:"網家期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"LYF",id:"8046",n:"南電期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"QSF",id:"8046",n:"小型南電期貨",k:"s",t:"自訂",m:2000,im:21.6,mm:16.56},{c:"NVF",id:"8069",n:"元太期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"PRF",id:"8086",n:"宏捷科期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"SKF",id:"8112",n:"至上期貨",k:"s",t:"級距2",m:2000,im:16.2,mm:12.42},{c:"QUF",id:"8150",n:"南茂期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"KKF",id:"8163",n:"達方期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"NWF",id:"8299",n:"群聯期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"QNF",id:"8299",n:"小型群聯期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"PQF",id:"8358",n:"金居期貨",k:"s",t:"自訂",m:2000,im:22.95,mm:17.6},{c:"PMF",id:"8436",n:"大江期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"KLF",id:"9904",n:"寶成期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"LMF",id:"9914",n:"美利達期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"MVF",id:"9938",n:"百和期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"KOF",id:"9939",n:"宏全期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"KPF",id:"9945",n:"潤泰新期貨",k:"s",t:"級距1",m:2000,im:13.5,mm:10.35},{c:"RUF",id:"9958",n:"世紀鋼期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"SWF",id:"9958",n:"小型世紀鋼期貨",k:"s",t:"級距3",m:2000,im:20.25,mm:15.53},{c:"NYF",id:"0050",n:"元大台灣50ETF期貨",k:"e",m:10000,imF:79000,mmF:61000},{c:"SRF",id:"0050",n:"小型元大台灣50ETF期貨",k:"e",m:1000,imF:7900,mmF:6100},{c:"VHF",id:"0052",n:"富邦科技ETF期貨",k:"e",m:10000,imF:50000,mmF:39000},{c:"PFF",id:"0056",n:"元大高股息ETF期貨",k:"e",m:10000,imF:27000,mmF:21000},{c:"SSF",id:"0056",n:"小型元大高股息ETF期貨",k:"e",m:1000,imF:2700,mmF:2100},{c:"OAF",id:"006205",n:"富邦上証ETF期貨",k:"e",m:10000,imF:29000,mmF:22000},{c:"OBF",id:"006206",n:"元大上證50ETF期貨",k:"e",m:10000,imF:29000,mmF:22000},{c:"OJF",id:"00636",n:"國泰中國A50ETF期貨",k:"e",m:10000,imF:21000,mmF:16000},{c:"OKF",id:"00639",n:"富邦深100ETF期貨",k:"e",m:10000,imF:13000,mmF:10000},{c:"OOF",id:"00643",n:"群益深証中小ETF期貨",k:"e",m:10000,imF:15000,mmF:12000},{c:"RZF",id:"00679B",n:"元大美債20年ETF期貨",k:"e",m:10000,imF:19000,mmF:15000},{c:"UKF",id:"00687B",n:"國泰20年美債ETF期貨",k:"e",m:10000,imF:21000,mmF:16000},{c:"SIF",id:"00719B",n:"元大美債1-3ETF期貨",k:"e",m:10000,imF:15000,mmF:12000},{c:"URF",id:"00757",n:"統一FANG+ETF期貨",k:"e",m:10000,imF:107000,mmF:82000},{c:"USF",id:"00757",n:"小型統一FANG+ETF期貨",k:"e",m:1000,imF:10700,mmF:8200},{c:"SQF",id:"00772B",n:"中信高評級公司債ETF期貨",k:"e",m:10000,imF:22000,mmF:17000},{c:"RIF",id:"00878",n:"國泰永續高股息ETF期貨",k:"e",m:10000,imF:18000,mmF:14000},{c:"RXF",id:"00885",n:"富邦越南ETF期貨",k:"e",m:10000,imF:14000,mmF:11000},{c:"SGF",id:"00893",n:"國泰智能電動車ETF期貨",k:"e",m:10000,imF:32000,mmF:24000},{c:"SMF",id:"00919",n:"群益台灣精選高息ETF期貨",k:"e",m:10000,imF:18000,mmF:14000},{c:"RYF",id:"00923",n:"群益台ESG低碳50ETF期貨",k:"e",m:10000,imF:33000,mmF:25000},{c:"SNF",id:"00929",n:"復華台灣科技優息ETF期貨",k:"e",m:10000,imF:19000,mmF:15000},{c:"UJF",id:"00937B",n:"群益ESG投等債20+ETF期貨",k:"e",m:10000,imF:11000,mmF:9000},{c:"SUF",id:"00940",n:"元大台灣價值高息ETF期貨",k:"e",m:10000,imF:9000,mmF:7000}];
+        const SSF_TIERMAP = { '級距1':'1','級距2':'2','級距3':'3','自訂':'custom' };
+
+        const templates = {
+            'stock': { kind: 'stock', name: "新股票期貨", tag: "股票期貨 (固定保證金)", dir: 1, tier: '2',
+                       lots: 1, entry: 100, current: 100, multiplier: 2000, imPerLot: 32400, mmPerLot: 24840, riskImPerLot: 32400 },
+            'TX':    { kind: 'index', name: "大臺指期 (大台)", tag: "指數期貨 (固定保證金)", dir: 1,
+                       lots: 1, entry: 23000, current: 23000, multiplier: 200, imPerLot: 636000, mmPerLot: 488000, riskImPerLot: 636000 },
+            'MTX':   { kind: 'index', name: "小型臺指期 (小台)", tag: "指數期貨 (固定保證金)", dir: 1,
+                       lots: 1, entry: 23000, current: 23000, multiplier: 50, imPerLot: 159000, mmPerLot: 122000, riskImPerLot: 159000 },
+            'TMF':   { kind: 'index', name: "微型臺指期 (微台)", tag: "指數期貨 (固定保證金)", dir: 1,
+                       lots: 1, entry: 23000, current: 23000, multiplier: 10, imPerLot: 31800, mmPerLot: 24400, riskImPerLot: 31800 }
+        };
+
+        // 初始部位：對齊截圖中的聯電期 086
         let products = [
-            { id: 1, type: 'ratio', name: "聯電", lots: 6, entry: 163.0833, current: 132, level: 'broker', imRatio: 15.77, mmRatio: 12.09, multiplier: 2000, imFixed: 0, mmFixed: 0 }
+            { id: 1, kind: 'stock', name: "聯電期 086", tag: "股票期貨 (固定保證金)", dir: 1, tier: 'custom',
+              lots: 6, entry: 163.0833, current: 132, multiplier: 2000, imPerLot: 41634, mmPerLot: 31919, riskImPerLot: 45533 }
         ];
 
         function formatMoney(number) { return Math.round(number).toLocaleString('en-US'); }
@@ -300,73 +356,53 @@
         function renderProducts() {
             const container = document.getElementById('product-container');
             container.innerHTML = '';
-            
+
             products.forEach((p, index) => {
-                const isFixed = p.type === 'fixed';
-                const tagLabel = isFixed ? '固定保證金' : '比例保證金';
-                
-                let marginInputs = '';
-                if (isFixed) {
-                    marginInputs = `
-                        <div class="input-grid-4" style="grid-column: span 2; display: grid; gap: 8px;">
-                            <div class="input-group">
-                                <label>保證金類型</label>
-                                <select disabled><option>指數固定金額</option></select>
-                            </div>
-                            <div class="input-group">
-                                <label>原始保證金(元/口)</label>
-                                <input type="number" value="${p.imFixed}" oninput="updateProduct(${index}, 'imFixed', this.value)">
-                            </div>
-                            <div class="input-group">
-                                <label>維持保證金(元/口)</label>
-                                <input type="number" value="${p.mmFixed}" oninput="updateProduct(${index}, 'mmFixed', this.value)">
-                            </div>
-                            <div class="input-group">
-                                <label>每點價值(元)</label>
-                                <input type="number" value="${p.multiplier}" oninput="updateProduct(${index}, 'multiplier', this.value)">
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    const isCustom = p.level === 'custom';
-                    marginInputs = `
-                        <div class="input-grid-4" style="grid-column: span 2; display: grid; gap: 8px;">
+                const isStock = p.kind === 'stock';
+                const unitLabel = isStock ? '每口股數' : '每點價值(元)';
+
+                let ssfPicker = '';
+                if (isStock) {
+                    ssfPicker = `
+                            <div class="input-group" style="grid-column: span 3;">
+                                <label>🔎 股期代碼查詢（打代碼／名稱／股號，自動帶入級距與保證金）</label>
+                                <input list="ssfList" placeholder="例：CCF 或 聯電 或 2303" onchange="pickSSF(${index}, this.value)">
+                            </div>`;
+                }
+                let tierSelect = '';
+                if (isStock) {
+                    const t = p.tier || 'custom';
+                    tierSelect = `
                             <div class="input-group" style="grid-column: span 2;">
-                                <label>保證金級距</label>
-                                <select onchange="changeStockLevel(${index}, this.value)">
-                                    <option value="broker" ${p.level === 'broker' ? 'selected' : ''}>券商實際 (15.77%)</option>
-                                    <option value="lv1" ${p.level === 'lv1' ? 'selected' : ''}>期交所 級距一 (13.5%)</option>
-                                    <option value="lv2" ${p.level === 'lv2' ? 'selected' : ''}>期交所 級距二 (16.2%)</option>
-                                    <option value="lv3" ${p.level === 'lv3' ? 'selected' : ''}>期交所 級距三 (20.25%)</option>
-                                    <option value="custom" ${p.level === 'custom' ? 'selected' : ''}>✍️ 手動自訂輸入</option>
+                                <label>期交所級距（選了自動帶入比例金額）</label>
+                                <select onchange="changeTier(${index}, this.value)">
+                                    <option value="custom" ${t === 'custom' ? 'selected' : ''}>自訂（直接填每口金額）</option>
+                                    <option value="1" ${t === '1' ? 'selected' : ''}>級距1 · 原始13.5% / 維持10.35%</option>
+                                    <option value="2" ${t === '2' ? 'selected' : ''}>級距2 · 原始16.2% / 維持12.42%</option>
+                                    <option value="3" ${t === '3' ? 'selected' : ''}>級距3 · 原始20.25% / 維持15.53%</option>
                                 </select>
-                            </div>
-                            <div class="input-group">
-                                <label>原始保證金(%)</label>
-                                <input type="number" step="0.01" value="${p.imRatio}" ${!isCustom ? 'disabled' : ''} oninput="updateProduct(${index}, 'imRatio', this.value)">
-                            </div>
-                            <div class="input-group">
-                                <label>維持保證金(%)</label>
-                                <input type="number" step="0.01" value="${p.mmRatio}" ${!isCustom ? 'disabled' : ''} oninput="updateProduct(${index}, 'mmRatio', this.value)">
-                            </div>
-                            <div class="input-group" style="grid-column: span 2;">
-                                <label>每口股數</label>
-                                <input type="number" value="${p.multiplier}" oninput="updateProduct(${index}, 'multiplier', this.value)">
-                            </div>
-                        </div>
-                    `;
+                            </div>`;
                 }
 
                 const html = `
                     <div class="product-item">
                         <div class="product-header">
                             <div>
-                                <input type="text" value="${p.name}" onchange="updateProduct(${index}, 'name', this.value)" style="background:transparent; border:none; color:var(--accent-light); font-weight:bold; font-size:1rem; width:150px; outline:none;" placeholder="商品名稱">
-                                <span class="product-tag">${tagLabel}</span>
+                                <input type="text" value="${p.name}" onchange="updateProduct(${index}, 'name', this.value)"
+                                    style="background:transparent; border:none; color:var(--accent-light); font-weight:bold; font-size:1rem; width:130px; outline:none;" placeholder="商品名稱">
+                                <span class="product-tag">${p.tag}</span>
                             </div>
                             <button class="btn-remove" onclick="removeProduct(${index})">刪除</button>
                         </div>
                         <div class="product-grid">
+                            ${ssfPicker}
+                            <div class="input-group">
+                                <label>方向</label>
+                                <select onchange="updateProduct(${index}, 'dir', this.value)">
+                                    <option value="1" ${p.dir === 1 ? 'selected' : ''}>買進 (多)</option>
+                                    <option value="-1" ${p.dir === -1 ? 'selected' : ''}>賣出 (空)</option>
+                                </select>
+                            </div>
                             <div class="input-group">
                                 <label>口數</label>
                                 <input type="number" value="${p.lots}" oninput="updateProduct(${index}, 'lots', this.value)">
@@ -379,39 +415,33 @@
                                 <label>目前市價</label>
                                 <input type="number" step="0.5" value="${p.current}" oninput="updateProduct(${index}, 'current', this.value)">
                             </div>
-                            ${marginInputs}
+                            <div class="input-group">
+                                <label>${unitLabel}</label>
+                                <input type="number" value="${p.multiplier}" oninput="updateProduct(${index}, 'multiplier', this.value)">
+                            </div>
+                            ${tierSelect}
+                            <div class="input-group">
+                                <label>原始保證金/口</label>
+                                <input type="number" value="${p.imPerLot}" oninput="updateProduct(${index}, 'imPerLot', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>維持保證金/口</label>
+                                <input type="number" value="${p.mmPerLot}" oninput="updateProduct(${index}, 'mmPerLot', this.value)">
+                            </div>
+                            <div class="input-group" style="grid-column: span 2;">
+                                <label>風險指標保證金/口 (選填，預設同原始)</label>
+                                <input type="number" value="${p.riskImPerLot}" oninput="updateProduct(${index}, 'riskImPerLot', this.value)">
+                            </div>
                         </div>
                         <div class="product-footer">
                             <div class="product-trigger">
                                 🛡️ 單項防禦 ｜ 追繳: <span class="trigger-margin-val">--</span> ｜ 斷頭: <span class="trigger-liq-val">--</span>
                             </div>
-                            <div class="product-pnl">
-                                浮動損益: <span class="pnl-val">--</span>
-                            </div>
+                            <div class="product-pnl">浮動損益: <span class="pnl-val">--</span></div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 container.insertAdjacentHTML('beforeend', html);
             });
-        }
-
-        function changeStockLevel(index, levelKey) {
-            products[index].level = levelKey;
-            if (levelKey === 'broker') {
-                products[index].imRatio = 15.77;
-                products[index].mmRatio = 12.09;
-            } else if (levelKey === 'lv1') {
-                products[index].imRatio = 13.50;
-                products[index].mmRatio = 10.35;
-            } else if (levelKey === 'lv2') {
-                products[index].imRatio = 16.20;
-                products[index].mmRatio = 12.42;
-            } else if (levelKey === 'lv3') {
-                products[index].imRatio = 20.25;
-                products[index].mmRatio = 15.53;
-            }
-            renderProducts();
-            calculate();
         }
 
         function addProduct(typeKey) {
@@ -420,55 +450,83 @@
             renderProducts();
             calculate();
         }
+        function removeProduct(index) { products.splice(index, 1); renderProducts(); calculate(); }
+        function updateProduct(index, field, value) {
+            if (field === 'name') products[index][field] = value;
+            else if (field === 'dir') products[index][field] = parseInt(value, 10);
+            else products[index][field] = parseFloat(value) || 0;
+            // 手動改保證金金額 → 視為自訂級距
+            if (field === 'imPerLot' || field === 'mmPerLot' || field === 'riskImPerLot') products[index].tier = 'custom';
+            calculate();
+        }
 
-        function removeProduct(index) {
-            products.splice(index, 1);
+        // 選擇期交所級距：以「目前市價」為基準價，帶入該級距比例算出每口金額
+        function changeTier(index, tierKey) {
+            const p = products[index];
+            p.tier = tierKey;
+            if (tierKey !== 'custom' && SSF_TIERS[tierKey]) {
+                const base = (p.current || p.entry || 0) * p.multiplier;   // 契約價值/口
+                p.imPerLot = Math.round(base * SSF_TIERS[tierKey].im / 100);
+                p.mmPerLot = Math.round(base * SSF_TIERS[tierKey].mm / 100);
+                p.riskImPerLot = p.imPerLot;
+            }
             renderProducts();
             calculate();
         }
 
-        function updateProduct(index, field, value) {
-            if (field === 'name') {
-                products[index][field] = value;
+        // 從代碼庫帶入某檔股期的級距與保證金比例
+        function pickSSF(index, val) {
+            if (!val) return;
+            const token = String(val).trim().split(/[\s｜|]/)[0].toUpperCase();
+            let e = SSF_DB.find(x => x.c.toUpperCase() === token) || SSF_DB.find(x => x.id === token);
+            if (!e) { const nn = String(val).replace(/\s/g,''); e = SSF_DB.find(x => x.n.replace(/\s/g,'') === nn) || SSF_DB.find(x => x.n.includes(nn)); }
+            if (!e) return;
+            const p = products[index];
+            p.name = e.n; p.multiplier = e.m;
+            if (e.k === 's') {
+                p.tier = SSF_TIERMAP[e.t] || 'custom';
+                const base = (p.current || p.entry || 0) * p.multiplier;
+                p.imPerLot = Math.round(base * e.im / 100);
+                p.mmPerLot = Math.round(base * e.mm / 100);
+                p.riskImPerLot = p.imPerLot;
+                p.tag = '股票期貨 ' + (e.t || '自訂');
             } else {
-                products[index][field] = parseFloat(value) || 0;
+                p.tier = 'custom';
+                p.imPerLot = e.imF; p.mmPerLot = e.mmF; p.riskImPerLot = e.imF;
+                p.tag = 'ETF期貨 (固定保證金)';
             }
-            calculate(); 
+            renderProducts();
+            calculate();
+        }
+
+        function buildSsfDatalist() {
+            const dl = document.getElementById('ssfList');
+            if (dl) dl.innerHTML = SSF_DB.map(e => '<option value="' + e.c + ' ' + e.n + ' ' + e.id + '"></option>').join('');
         }
 
         function calculate() {
             const balance = parseFloat(document.getElementById('balance').value) || 0;
-            
-            let totalPnL = 0;
-            let totalIM = 0;
-            let totalMM = 0;
+            const withdrawReserve = parseFloat(document.getElementById('withdrawReserve').value) || 0;
+
+            let totalPnL = 0, totalIM = 0, totalMM = 0, totalRiskIM = 0;
 
             products.forEach(p => {
-                const totalMultiplier = p.lots * p.multiplier;
-                totalPnL += (p.current - p.entry) * totalMultiplier;
-                
-                if (p.type === 'fixed') {
-                    totalIM += p.imFixed * p.lots;
-                    totalMM += p.mmFixed * p.lots;
-                } else {
-                    const singleContractValue = p.current * p.multiplier;
-                    const singleIM = Math.round(singleContractValue * (p.imRatio / 100));
-                    const singleMM = Math.round(singleContractValue * (p.mmRatio / 100));
-                    
-                    totalIM += singleIM * p.lots;
-                    totalMM += singleMM * p.lots;
-                }
+                const contractSize = p.lots * p.multiplier;
+                const dir = p.dir === -1 ? -1 : 1;
+                totalPnL += dir * (p.current - p.entry) * contractSize;
+                totalIM += p.imPerLot * p.lots;
+                totalMM += p.mmPerLot * p.lots;
+                const riskPerLot = (p.riskImPerLot && p.riskImPerLot > 0) ? p.riskImPerLot : p.imPerLot;
+                totalRiskIM += riskPerLot * p.lots;
             });
 
             const totalEquity = balance + totalPnL;
             const excessMargin = totalEquity - totalIM;
-            const availableMargin = totalPnL > 0 ? (excessMargin - totalPnL) : excessMargin;
-            const riskRatio = totalIM > 0 ? (totalEquity / totalIM) * 100 : 0;
-            
-            const bufferMargin = totalEquity - totalMM; 
-            const bufferLiq = totalEquity - (totalIM * 0.25); 
-
-            const isLiquidated = totalIM > 0 && riskRatio < 25;
+            const availableMargin = excessMargin - Math.max(0, totalPnL) - withdrawReserve;
+            const riskRatio = totalRiskIM > 0 ? (totalEquity / totalRiskIM) * 100 : 0;
+            const bufferMargin = totalEquity - totalMM;
+            const bufferLiq = totalEquity - (totalRiskIM * 0.25);
+            const isLiquidated = totalRiskIM > 0 && riskRatio < 25;
 
             const pnlEl = document.getElementById('val_pnl');
             pnlEl.innerText = formatMoney(totalPnL);
@@ -477,9 +535,15 @@
             document.getElementById('val_equity').innerText = formatMoney(totalEquity);
             document.getElementById('val_im').innerText = formatMoney(totalIM);
             document.getElementById('val_mm').innerText = formatMoney(totalMM);
-            document.getElementById('val_excess').innerText = formatMoney(excessMargin);
-            document.getElementById('val_available').innerText = formatMoney(availableMargin);
-            
+
+            const excessEl = document.getElementById('val_excess');
+            excessEl.innerText = formatMoney(excessMargin);
+            excessEl.className = 'data-value ' + (excessMargin < 0 ? 'text-red' : 'text-green');
+
+            const availEl = document.getElementById('val_available');
+            availEl.innerText = formatMoney(availableMargin);
+            availEl.className = 'data-value ' + (availableMargin < 0 ? 'text-red' : 'text-accent');
+
             const riskEl = document.getElementById('val_risk');
             riskEl.innerText = riskRatio.toFixed(2) + '%';
             riskEl.className = 'data-value ' + (riskRatio < 100 ? 'text-red' : 'text-green');
@@ -487,85 +551,218 @@
             const bufferPanel = document.getElementById('buffer_panel');
             const bufferTitle = document.getElementById('buffer_title');
             const bufferEl = document.getElementById('val_buffer');
-
             if (isLiquidated) {
                 bufferPanel.className = 'trigger-panel fatal';
-                bufferTitle.innerText = '💀 嚴重警告：已觸發盤中強制斷頭 (<25%)！';
-                bufferEl.innerText = formatMoney(bufferMargin) + ' 元';
-                bufferEl.style.color = 'var(--red-color)';
+                bufferTitle.innerText = '💀 嚴重警告：已觸發盤中強制斷頭 (風險指標 < 25%)！';
+                bufferEl.innerText = formatMoney(bufferMargin) + ' 元'; bufferEl.style.color = 'var(--red-color)';
             } else if (bufferMargin < 0) {
                 bufferPanel.className = 'trigger-panel danger';
                 bufferTitle.innerText = '⚠️ 警告：已觸發盤後追繳 (跌破維持保證金)！';
-                bufferEl.innerText = formatMoney(bufferMargin) + ' 元';
-                bufferEl.style.color = 'var(--red-color)';
+                bufferEl.innerText = formatMoney(bufferMargin) + ' 元'; bufferEl.style.color = 'var(--red-color)';
             } else {
                 bufferPanel.className = 'trigger-panel';
                 bufferTitle.innerText = '🛡️ 帳戶總體防禦力 (總安全氣囊)';
-                bufferEl.innerText = formatMoney(bufferMargin) + ' 元';
-                bufferEl.style.color = 'var(--accent-light)';
+                bufferEl.innerText = formatMoney(bufferMargin) + ' 元'; bufferEl.style.color = 'var(--accent-light)';
             }
 
             const pnlElements = document.querySelectorAll('.pnl-val');
             const marginElements = document.querySelectorAll('.trigger-margin-val');
             const liqElements = document.querySelectorAll('.trigger-liq-val');
-            
+
             products.forEach((p, index) => {
-                const totalMultiplier = p.lots * p.multiplier;
-                
-                const pnl = (p.current - p.entry) * totalMultiplier;
-                if(pnlElements[index]) {
+                const contractSize = p.lots * p.multiplier;
+                const dir = p.dir === -1 ? -1 : 1;
+                const pnl = dir * (p.current - p.entry) * contractSize;
+                if (pnlElements[index]) {
                     pnlElements[index].innerText = (pnl > 0 ? '+' : '') + formatMoney(pnl);
                     pnlElements[index].className = 'pnl-val ' + (pnl > 0 ? 'text-green' : (pnl < 0 ? 'text-red' : ''));
                 }
+                if (marginElements[index] && liqElements[index]) {
+                    if (contractSize === 0) { marginElements[index].innerText = "--"; liqElements[index].innerText = "--"; return; }
+                    // 多單向下、空單向上：以 dir 反映觸發方向
+                    const triggerMarginPrice = p.current - dir * (bufferMargin / contractSize);
+                    const triggerLiqPrice = p.current - dir * (bufferLiq / contractSize);
 
-                if(marginElements[index] && liqElements[index]) {
-                    if (totalMultiplier === 0) {
-                        marginElements[index].innerText = "--";
-                        liqElements[index].innerText = "--";
-                    } else {
-                        let triggerMarginPrice = 0;
-                        let triggerLiqPrice = 0;
-                        
-                        if (p.type === 'fixed') {
-                            triggerMarginPrice = p.current - (bufferMargin / totalMultiplier);
-                            triggerLiqPrice = p.current - (bufferLiq / totalMultiplier);
-                        } else {
-                            const mmRatioDec = p.mmRatio / 100;
-                            const imRatioDec = p.imRatio / 100;
-                            triggerMarginPrice = p.current - (bufferMargin / (totalMultiplier * (1 - mmRatioDec)));
-                            triggerLiqPrice = p.current - (bufferLiq / (totalMultiplier * (1 - 0.25 * imRatioDec)));
-                        }
-                        
-                        if (bufferMargin < 0) {
-                            marginElements[index].innerText = "已觸發";
-                            marginElements[index].className = "trigger-margin-val text-red";
-                        } else if (triggerMarginPrice <= 0) {
-                            marginElements[index].innerText = "極安全";
-                            marginElements[index].className = "trigger-margin-val text-green";
-                        } else {
-                            marginElements[index].innerText = triggerMarginPrice.toFixed(2) + " 元";
-                            marginElements[index].className = "trigger-margin-val text-accent";
-                        }
+                    if (bufferMargin < 0) { marginElements[index].innerText = "已觸發"; marginElements[index].className = "trigger-margin-val text-red"; }
+                    else if (triggerMarginPrice <= 0) { marginElements[index].innerText = "極安全"; marginElements[index].className = "trigger-margin-val text-green"; }
+                    else { marginElements[index].innerText = triggerMarginPrice.toFixed(2) + " 元"; marginElements[index].className = "trigger-margin-val text-accent"; }
 
-                        if (isLiquidated) {
-                            liqElements[index].innerText = "已斷頭";
-                            liqElements[index].className = "trigger-liq-val text-red";
-                        } else if (triggerLiqPrice <= 0) {
-                            liqElements[index].innerText = "極安全";
-                            liqElements[index].className = "trigger-liq-val text-green";
-                        } else {
-                            liqElements[index].innerText = triggerLiqPrice.toFixed(2) + " 元";
-                            liqElements[index].className = "trigger-liq-val text-accent";
-                        }
-                    }
+                    if (isLiquidated) { liqElements[index].innerText = "已斷頭"; liqElements[index].className = "trigger-liq-val text-red"; }
+                    else if (triggerLiqPrice <= 0) { liqElements[index].innerText = "極安全"; liqElements[index].className = "trigger-liq-val text-green"; }
+                    else { liqElements[index].innerText = triggerLiqPrice.toFixed(2) + " 元"; liqElements[index].className = "trigger-liq-val text-accent"; }
                 }
             });
         }
 
-        window.onload = () => {
-            renderProducts();
-            calculate();
-        };
+        /* ============ 一鍵重算保證金基準（純本機解析，不連任何外部服務）============ */
+        let marginMode = 'amount';
+        let pendingPlan = null;
+
+        function openMarginTool() { document.getElementById('marginModal').classList.add('open'); }
+        function closeMarginTool() { document.getElementById('marginModal').classList.remove('open'); }
+        function setMarginMode(mode) {
+            marginMode = mode;
+            document.getElementById('tab-amount').classList.toggle('active', mode === 'amount');
+            document.getElementById('tab-ratio').classList.toggle('active', mode === 'ratio');
+            document.getElementById('hint-amount').style.display = mode === 'amount' ? '' : 'none';
+            document.getElementById('hint-ratio').style.display = mode === 'ratio' ? '' : 'none';
+            pendingPlan = null;
+            document.getElementById('previewArea').innerHTML = '';
+            document.getElementById('applyBtn').disabled = true;
+        }
+
+        function toNumber(s) {
+            if (s === undefined || s === null) return NaN;
+            const cleaned = String(s).replace(/[^0-9.\-]/g, '');
+            if (cleaned === '' || cleaned === '-' || cleaned === '.') return NaN;
+            return parseFloat(cleaned);
+        }
+        function normalizeName(s) {
+            return String(s).replace(/\s+/g, '').replace(/(股票期貨|指數期貨|期貨|股期|期)$/g, '').toLowerCase();
+        }
+        function splitLine(line) {
+            let parts = line.split('\t');
+            if (parts.length < 2) parts = line.split(',');
+            if (parts.length < 2) parts = line.split(/\s{2,}/);
+            if (parts.length < 2) parts = line.split(/\s+/);
+            return parts.map(s => s.trim()).filter(s => s.length);
+        }
+        function isHeaderRow(parts) {
+            const joined = parts.join('');
+            const hasKeyword = /(名稱|代碼|商品|標的|原始|維持|風險|已收|保證金|比例|結算|收盤|基準)/.test(joined);
+            const bigNums = (joined.match(/\d{3,}/g) || []).length;
+            return hasKeyword && bigNums === 0;
+        }
+        function buildColumnMap(headerParts) {
+            const map = { name: -1, im: -1, mm: -1, risk: -1, price: -1, imRatio: -1, mmRatio: -1 };
+            headerParts.forEach((h, i) => {
+                if (map.name === -1 && /(名稱|商品|標的|代碼|簡稱)/.test(h)) map.name = i;
+                if (/風險|已收/.test(h)) map.risk = i;
+                else if (/原始/.test(h) && /比例|%|率/.test(h)) map.imRatio = i;
+                else if (/維持/.test(h) && /比例|%|率/.test(h)) map.mmRatio = i;
+                else if (/原始/.test(h)) map.im = i;
+                else if (/維持/.test(h)) map.mm = i;
+                if (/結算|收盤|基準/.test(h)) map.price = i;
+            });
+            if (map.name === -1) map.name = 0;
+            return map;
+        }
+
+        function parseMarginTable() {
+            const raw = document.getElementById('marginPaste').value;
+            const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(l => l.length);
+            const previewArea = document.getElementById('previewArea');
+            if (!lines.length) {
+                previewArea.innerHTML = '<div class="preview-summary text-red">沒有偵測到任何資料，請先貼上保證金表。</div>';
+                document.getElementById('applyBtn').disabled = true; pendingPlan = null; return;
+            }
+            const autoAdd = document.getElementById('autoAddUnmatched').checked;
+            let colMap = null;
+            const plan = [];
+
+            lines.forEach(line => {
+                const parts = splitLine(line);
+                if (parts.length < 2) return;
+                if (isHeaderRow(parts)) { colMap = buildColumnMap(parts); return; }
+
+                const nameIdx = colMap ? colMap.name : 0;
+                const rowName = parts[nameIdx] || parts[0];
+                let im = NaN, mm = NaN, risk = NaN, price = NaN, imRatio = NaN, mmRatio = NaN;
+
+                if (colMap) {
+                    if (colMap.price >= 0) price = toNumber(parts[colMap.price]);
+                    if (colMap.imRatio >= 0) imRatio = toNumber(parts[colMap.imRatio]);
+                    if (colMap.mmRatio >= 0) mmRatio = toNumber(parts[colMap.mmRatio]);
+                    if (colMap.im >= 0) im = toNumber(parts[colMap.im]);
+                    if (colMap.mm >= 0) mm = toNumber(parts[colMap.mm]);
+                    if (colMap.risk >= 0) risk = toNumber(parts[colMap.risk]);
+                } else {
+                    const nums = parts.slice(1).map(toNumber).filter(n => !isNaN(n));
+                    if (marginMode === 'amount') { im = nums[0]; mm = nums[1]; risk = nums[2]; }
+                    else { price = nums[0]; imRatio = nums[1]; mmRatio = nums[2]; }
+                }
+
+                const nn = normalizeName(rowName);
+                let matchIndex = -1;
+                products.forEach((p, idx) => {
+                    if (matchIndex >= 0) return;
+                    const pn = normalizeName(p.name);
+                    if (pn && nn && (pn.includes(nn) || nn.includes(pn))) matchIndex = idx;
+                });
+
+                if (marginMode === 'ratio') {
+                    const mult = matchIndex >= 0 ? products[matchIndex].multiplier : 2000;
+                    if (!isNaN(price) && !isNaN(imRatio)) im = Math.round(price * mult * imRatio / 100);
+                    if (!isNaN(price) && !isNaN(mmRatio)) mm = Math.round(price * mult * mmRatio / 100);
+                }
+
+                if (isNaN(im) && isNaN(mm)) return;
+                let action = matchIndex >= 0 ? 'update' : (autoAdd ? 'new' : 'skip');
+                plan.push({ rowName, im, mm, risk, matchIndex, action });
+            });
+
+            renderPreview(plan);
+        }
+
+        function renderPreview(plan) {
+            const previewArea = document.getElementById('previewArea');
+            if (!plan.length) {
+                previewArea.innerHTML = '<div class="preview-summary text-red">解析不到有效資料。請確認欄位順序，或切換上方模式。</div>';
+                document.getElementById('applyBtn').disabled = true; pendingPlan = null; return;
+            }
+            const nUpdate = plan.filter(r => r.action === 'update').length;
+            const nNew = plan.filter(r => r.action === 'new').length;
+            const nSkip = plan.filter(r => r.action === 'skip').length;
+
+            let rows = '';
+            plan.forEach(r => {
+                let statusText, cls;
+                if (r.action === 'update') { statusText = '更新 → ' + products[r.matchIndex].name; cls = 'status-update'; }
+                else if (r.action === 'new') { statusText = '新增股票期貨'; cls = 'status-new'; }
+                else { statusText = '未匹配（略過）'; cls = 'status-skip'; }
+                rows += `<tr>
+                    <td>${r.rowName}</td>
+                    <td class="num">${isNaN(r.im) ? '—' : formatMoney(r.im)}</td>
+                    <td class="num">${isNaN(r.mm) ? '—' : formatMoney(r.mm)}</td>
+                    <td class="num">${isNaN(r.risk) ? '（同原始）' : formatMoney(r.risk)}</td>
+                    <td class="${cls}">${statusText}</td>
+                </tr>`;
+            });
+            previewArea.innerHTML = `
+                <div class="preview-summary">解析結果：更新 ${nUpdate} 檔、新增 ${nNew} 檔、略過 ${nSkip} 檔${nSkip ? '（勾選上方選項可自動新增）' : ''}。</div>
+                <table class="preview-table">
+                    <thead><tr><th>名稱</th><th style="text-align:right;">原始/口</th><th style="text-align:right;">維持/口</th><th style="text-align:right;">風險/口</th><th>動作</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>`;
+            pendingPlan = plan;
+            document.getElementById('applyBtn').disabled = (nUpdate + nNew) === 0;
+        }
+
+        function applyMarginTable() {
+            if (!pendingPlan) return;
+            pendingPlan.forEach(r => {
+                if (r.action === 'update') {
+                    const p = products[r.matchIndex];
+                    if (!isNaN(r.im)) p.imPerLot = r.im;
+                    if (!isNaN(r.mm)) p.mmPerLot = r.mm;
+                    p.riskImPerLot = !isNaN(r.risk) ? r.risk : p.imPerLot;
+                } else if (r.action === 'new') {
+                    const im = isNaN(r.im) ? 0 : r.im, mm = isNaN(r.mm) ? 0 : r.mm;
+                    products.push({
+                        id: Date.now() + Math.random(), kind: 'stock', name: r.rowName, tag: "股票期貨 (固定保證金)", dir: 1,
+                        lots: 1, entry: 100, current: 100, multiplier: 2000,
+                        imPerLot: im, mmPerLot: mm, riskImPerLot: !isNaN(r.risk) ? r.risk : im
+                    });
+                }
+            });
+            renderProducts(); calculate(); closeMarginTool();
+            pendingPlan = null;
+            document.getElementById('marginPaste').value = '';
+            document.getElementById('previewArea').innerHTML = '';
+            document.getElementById('applyBtn').disabled = true;
+        }
+
+        window.onload = () => { buildSsfDatalist(); renderProducts(); calculate(); };
     </script>
 </body>
 </html>
